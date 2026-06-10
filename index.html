@@ -120,16 +120,17 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
 
 /* Weekly view */
 .week-grid { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.week-days { display: grid; grid-template-columns: repeat(7,1fr); border-bottom: 1px solid #f0f0f0; }
+.week-days { display: grid; grid-template-columns: 44px repeat(7, 1fr); border-bottom: 1px solid #f0f0f0; }
+.week-days-spacer { width: 44px; }
 .week-day-header { padding: 8px 4px; text-align: center; font-size: 10px; font-weight: 700; color: #888; border-right: 1px solid #f5f5f5; cursor: pointer; }
 .week-day-header:last-child { border-right: none; }
 .week-day-header.today { color: #534AB7; }
 .week-day-header .wdh-num { font-size: 16px; font-weight: 700; color: #1a1a1a; display: block; }
 .week-day-header.today .wdh-num { background: #534AB7; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; margin: 2px auto 0; font-size: 14px; }
 .week-slots { overflow-y: auto; max-height: 480px; }
-.week-slot-row { display: flex; border-bottom: 1px solid #f5f5f5; min-height: 36px; }
-.week-time-col { width: 44px; flex-shrink: 0; padding: 6px 6px 6px 10px; font-size: 10px; font-weight: 600; color: #bbb; text-align: right; line-height: 1; }
-.week-day-col { flex: 1; border-left: 1px solid #f5f5f5; padding: 3px; min-width: 0; }
+.week-slot-row { display: grid; grid-template-columns: 44px repeat(7, 1fr); border-bottom: 1px solid #f5f5f5; min-height: 36px; }
+.week-time-col { width: 44px; padding: 6px 4px 6px 6px; font-size: 10px; font-weight: 600; color: #bbb; text-align: right; line-height: 1; }
+.week-day-col { border-left: 1px solid #f5f5f5; padding: 3px; min-width: 0; overflow: hidden; }
 .week-pill { font-size: 10px; border-radius: 4px; padding: 2px 4px; margin-bottom: 2px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
 .wp-meeting { background: #EEEDFE; color: #3C3489; }
 .wp-task { background: #E1F5EE; color: #085041; }
@@ -291,8 +292,8 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
   <div id="monthView" style="display:none;">
     <div class="month-grid">
       <div class="month-header">
-        <div class="month-day-name">Sun</div><div class="month-day-name">Mon</div><div class="month-day-name">Tue</div>
-        <div class="month-day-name">Wed</div><div class="month-day-name">Thu</div><div class="month-day-name">Fri</div><div class="month-day-name">Sat</div>
+        <div class="month-day-name">Mon</div><div class="month-day-name">Tue</div><div class="month-day-name">Wed</div>
+        <div class="month-day-name">Thu</div><div class="month-day-name">Fri</div><div class="month-day-name">Sat</div><div class="month-day-name">Sun</div>
       </div>
       <div class="month-cells" id="monthCells"></div>
     </div>
@@ -456,7 +457,7 @@ function addEntry(){
   const periodStart=document.getElementById('periodStart').value;
   const periodEnd=document.getElementById('periodEnd').value;
   const now=new Date();
-  const base={type:selectedType,text:cleaned,rawText:raw,slotH:timeSlot?timeSlot.h:null,slotM:timeSlot?timeSlot.m:null,addedTime:now.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}),timestamp:now.getTime(),done:false,recur:recurVal||null,isPeriod:false};
+  const base={type:selectedType,text:cleaned,rawText:raw,slotH:timeSlot!==null?timeSlot.h:null,slotM:timeSlot!==null?timeSlot.m:null,addedTime:now.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}),timestamp:now.getTime(),done:false,recur:recurVal||null,isPeriod:false};
   const toAdd=[];
 
   if(periodStart&&periodEnd){
@@ -717,7 +718,7 @@ function renderTimeline(){
   tl.innerHTML=html;
 }
 
-function getWeekStart(d){const dd=new Date(d);const day=dd.getDay();dd.setDate(dd.getDate()-day);return dd;}
+function getWeekStart(d){const dd=new Date(d);const day=dd.getDay();const diff=(day===0)?-6:1-day;dd.setDate(dd.getDate()+diff);return dd;}
 
 function renderWeek(){
   const wStart=getWeekStart(viewDate);
@@ -726,7 +727,7 @@ function renderWeek(){
   const todayDK=dateKey(new Date());
 
   // Headers
-  document.getElementById('weekDayHeaders').innerHTML=days.map(d=>{
+  document.getElementById('weekDayHeaders').innerHTML='<div class="week-days-spacer"></div>'+days.map(d=>{
     const dk=dateKey(d);
     const isT=dk===todayDK;
     return `<div class="week-day-header${isT?' today':''}" onclick="viewDate=new Date('${dk}T12:00:00');switchView('day')">
@@ -762,12 +763,13 @@ function renderMonth(){
   const year=viewDate.getFullYear(),month=viewDate.getMonth();
   const firstDay=new Date(year,month,1);
   const lastDay=new Date(year,month+1,0);
-  const startDow=firstDay.getDay();
+  // Mon=0, Tue=1...Sun=6
+  const rawDow=firstDay.getDay(); // 0=Sun,1=Mon...6=Sat
+  const startDow=(rawDow===0)?6:rawDow-1; // convert to Mon-start
   const todayDK=dateKey(new Date());
   const selDK=dateKey(viewDate);
 
   let html='';
-  // Empty cells before month start
   for(let i=0;i<startDow;i++) html+=`<div class="month-cell other-month"></div>`;
 
   for(let d=1;d<=lastDay.getDate();d++){
