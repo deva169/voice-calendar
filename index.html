@@ -8,13 +8,9 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0efe9; min-height: 100vh; }
 .app { max-width: 520px; margin: 0 auto; padding: 20px 16px 80px; }
-
-/* Header */
 .header { margin-bottom: 20px; }
 .header h1 { font-size: 24px; font-weight: 700; color: #1a1a1a; }
 .header .sub { font-size: 13px; color: #888; margin-top: 2px; }
-
-/* Nav */
 .nav { display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 16px; padding: 10px 14px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
 .nav-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #888; padding: 4px 8px; border-radius: 8px; }
 .nav-btn:hover { background: #f5f5f7; color: #1a1a1a; }
@@ -22,14 +18,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .nav-day { font-size: 16px; font-weight: 700; color: #1a1a1a; }
 .nav-date { font-size: 12px; color: #888; margin-top: 1px; }
 .today-btn { font-size: 12px; color: #534AB7; background: #EEEDFE; border: none; border-radius: 8px; padding: 4px 10px; cursor: pointer; font-weight: 600; }
-
-/* Stats */
 .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 16px; }
 .stat { background: white; border-radius: 12px; padding: 10px 6px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 .stat-num { font-size: 20px; font-weight: 700; color: #1a1a1a; }
 .stat-label { font-size: 10px; color: #888; margin-top: 2px; }
-
-/* Input */
 .input-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .type-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
 .type-chip { padding: 5px 11px; border-radius: 20px; border: 1.5px solid #e0e0e0; font-size: 12px; cursor: pointer; color: #888; background: #fafafa; }
@@ -47,9 +39,9 @@ textarea::placeholder { color: #ccc; }
 .add-btn { width: 48px; height: 48px; border-radius: 12px; border: none; background: #1a1a1a; color: white; cursor: pointer; font-size: 26px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .listen-hint { font-size: 12px; color: #D85A30; margin-top: 8px; display: none; }
 .listen-hint.show { display: block; }
-
-/* Daily page */
-.day-page { background: white; border-radius: 16px; padding: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+.detected-hint { font-size: 12px; color: #1D9E75; margin-top: 6px; display: none; padding: 6px 10px; background: #E1F5EE; border-radius: 8px; }
+.detected-hint.show { display: block; }
+.day-page { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .day-header { background: #1a1a1a; color: white; padding: 16px 18px; }
 .day-header-top { display: flex; align-items: center; justify-content: space-between; }
 .day-name { font-size: 22px; font-weight: 700; }
@@ -61,12 +53,14 @@ textarea::placeholder { color: #ccc; }
 .db-task { background: #085041; color: #E1F5EE; }
 .db-reminder { background: #633806; color: #FAEEDA; }
 .db-note { background: #0C447C; color: #E6F1FB; }
-
-/* Timeline */
+.filter-tabs { display: flex; gap: 6px; padding: 14px 18px 0; overflow-x: auto; }
+.filter-tabs::-webkit-scrollbar { display: none; }
+.ftab { padding: 5px 12px; border-radius: 16px; border: 1.5px solid #e8e8e8; background: white; color: #888; font-size: 12px; cursor: pointer; white-space: nowrap; }
+.ftab.active { background: #1a1a1a; color: white; border-color: #1a1a1a; font-weight: 600; }
 .timeline { padding: 16px 18px; }
 .timeline-empty { text-align: center; padding: 2.5rem 1rem; color: #ccc; font-size: 14px; }
 .timeline-empty .big { font-size: 40px; display: block; margin-bottom: 10px; }
-.tl-item { display: flex; gap: 14px; margin-bottom: 16px; position: relative; }
+.tl-item { display: flex; gap: 14px; margin-bottom: 16px; }
 .tl-item:last-child { margin-bottom: 0; }
 .tl-left { display: flex; flex-direction: column; align-items: center; width: 48px; flex-shrink: 0; }
 .tl-time { font-size: 12px; font-weight: 600; color: #888; white-space: nowrap; }
@@ -90,15 +84,8 @@ textarea::placeholder { color: #ccc; }
 .badge-reminder { background: #FAEEDA; color: #633806; }
 .badge-note { background: #E6F1FB; color: #0C447C; }
 .tl-actions { display: flex; gap: 4px; margin-top: 8px; }
-.tl-btn { background: none; border: none; cursor: pointer; color: #ccc; font-size: 15px; padding: 2px 6px; border-radius: 6px; }
-.tl-btn:hover { background: #f0efe9; }
-
-/* Filter tabs */
-.filter-tabs { display: flex; gap: 6px; padding: 14px 18px 0; overflow-x: auto; }
-.filter-tabs::-webkit-scrollbar { display: none; }
-.ftab { padding: 5px 12px; border-radius: 16px; border: 1.5px solid #e8e8e8; background: white; color: #888; font-size: 12px; cursor: pointer; white-space: nowrap; }
-.ftab.active { background: #1a1a1a; color: white; border-color: #1a1a1a; font-weight: 600; }
-
+.tl-btn { background: none; border: none; cursor: pointer; color: #ccc; font-size: 13px; padding: 3px 8px; border-radius: 6px; border: 1px solid #eee; }
+.tl-btn:hover { background: #f0efe9; color: #1a1a1a; }
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 24px; font-size: 14px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.show { opacity: 1; }
 </style>
@@ -110,20 +97,18 @@ textarea::placeholder { color: #ccc; }
     <div class="sub" id="totalCount">0 entries total</div>
   </div>
 
-  <!-- Date navigation -->
   <div class="nav">
-    <button class="nav-btn" onclick="changeDay(-1)" aria-label="Previous day">‹</button>
+    <button class="nav-btn" onclick="changeDay(-1)">‹</button>
     <div class="nav-center">
       <div class="nav-day" id="navDay"></div>
       <div class="nav-date" id="navDate"></div>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
       <button class="today-btn" onclick="goToday()">Today</button>
-      <button class="nav-btn" onclick="changeDay(1)" aria-label="Next day">›</button>
+      <button class="nav-btn" onclick="changeDay(1)">›</button>
     </div>
   </div>
 
-  <!-- Stats -->
   <div class="stats">
     <div class="stat"><div class="stat-num" id="sMeeting">0</div><div class="stat-label">Meetings</div></div>
     <div class="stat"><div class="stat-num" id="sTask">0</div><div class="stat-label">Tasks</div></div>
@@ -131,7 +116,6 @@ textarea::placeholder { color: #ccc; }
     <div class="stat"><div class="stat-num" id="sNote">0</div><div class="stat-label">Notes</div></div>
   </div>
 
-  <!-- Input -->
   <div class="input-card">
     <div class="type-row">
       <span class="type-chip sel-meeting" id="chip-meeting" onclick="selectType('meeting')">📅 Meeting</span>
@@ -140,16 +124,16 @@ textarea::placeholder { color: #ccc; }
       <span class="type-chip" id="chip-note" onclick="selectType('note')">📝 Note</span>
     </div>
     <div class="input-row">
-      <textarea id="entryInput" rows="2" placeholder="Speak or type your entry for this day..."></textarea>
-      <button class="mic-btn" id="micBtn" onclick="toggleMic()" aria-label="Tap to speak" id="micBtn">
+      <textarea id="entryInput" rows="2" placeholder='Say "task - call supplier tomorrow" or "reminder - pay rent Friday"...' oninput="autoDetect()"></textarea>
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()">
         <span id="micIcon">🎙️</span>
       </button>
-      <button class="add-btn" onclick="addEntry()" aria-label="Add">+</button>
+      <button class="add-btn" onclick="addEntry()">+</button>
     </div>
     <div class="listen-hint" id="listenHint">🔴 Listening... tap mic to stop</div>
+    <div class="detected-hint" id="detectedHint"></div>
   </div>
 
-  <!-- Daily page -->
   <div class="day-page">
     <div class="day-header">
       <div class="day-header-top">
@@ -183,10 +167,81 @@ textarea::placeholder { color: #ccc; }
 <script>
 let entries = JSON.parse(localStorage.getItem('diary_v2') || '[]');
 let selectedType = 'meeting', currentFilter = 'all', recognition = null, listening = false;
-let viewDate = new Date();
-viewDate.setHours(0,0,0,0);
+let viewDate = new Date(); viewDate.setHours(0,0,0,0);
+let detectedDate = null;
 
-function dateKey(d) { return d.toISOString().split('T')[0]; }
+function dateKey(d) {
+  const dd = new Date(d); dd.setHours(0,0,0,0);
+  return dd.toISOString().split('T')[0];
+}
+
+// Auto-detect type and date from text
+function autoDetect() {
+  const text = document.getElementById('entryInput').value.toLowerCase();
+  if (!text.trim()) { hideHint(); return; }
+
+  // Detect type
+  let detType = null;
+  if (/\b(task|todo|to do|to-do|do this|action|complete|finish|submit|send|call|email|buy|get|check|update)\b/.test(text)) detType = 'task';
+  else if (/\b(remind|reminder|don't forget|dont forget|alert|notify)\b/.test(text)) detType = 'reminder';
+  else if (/\b(note|notes|idea|thought|memo|remember|jot|write down)\b/.test(text)) detType = 'note';
+  else if (/\b(meeting|meet|call with|zoom|teams|appointment|interview|session|catch up|catchup|discussion|standup)\b/.test(text)) detType = 'meeting';
+
+  if (detType) selectType(detType);
+
+  // Detect date
+  const today = new Date(); today.setHours(0,0,0,0);
+  let dd = null;
+  if (/\btomorrow\b/.test(text)) {
+    dd = new Date(today); dd.setDate(dd.getDate() + 1);
+  } else if (/\byesterday\b/.test(text)) {
+    dd = new Date(today); dd.setDate(dd.getDate() - 1);
+  } else if (/\bnext week\b/.test(text)) {
+    dd = new Date(today); dd.setDate(dd.getDate() + 7);
+  } else if (/\btoday\b/.test(text)) {
+    dd = new Date(today);
+  } else {
+    const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+    for (let i = 0; i < days.length; i++) {
+      if (new RegExp('\\b' + days[i] + '\\b').test(text)) {
+        dd = new Date(today);
+        const diff = (i - today.getDay() + 7) % 7 || 7;
+        dd.setDate(dd.getDate() + diff);
+        break;
+      }
+    }
+    // Check for date patterns like "11th", "12th June" etc
+    const dateMatch = text.match(/(\d{1,2})(st|nd|rd|th)?(\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*)?/i);
+    if (dateMatch && !dd) {
+      const day = parseInt(dateMatch[1]);
+      const months = { jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11 };
+      const month = dateMatch[4] ? months[dateMatch[4].toLowerCase().substring(0,3)] : today.getMonth();
+      if (day >= 1 && day <= 31) {
+        dd = new Date(today.getFullYear(), month !== undefined ? month : today.getMonth(), day);
+        if (dd < today && !dateMatch[4]) dd.setMonth(dd.getMonth() + 1);
+      }
+    }
+  }
+
+  detectedDate = dd;
+
+  // Show hint
+  const hintEl = document.getElementById('detectedHint');
+  let hintParts = [];
+  if (detType) hintParts.push('Type: ' + detType);
+  if (dd) hintParts.push('Date: ' + dd.toLocaleDateString('en-AU', { weekday:'short', day:'numeric', month:'short' }));
+  if (hintParts.length) {
+    hintEl.textContent = '✓ Detected — ' + hintParts.join(' · ');
+    hintEl.classList.add('show');
+  } else {
+    hideHint();
+  }
+}
+
+function hideHint() {
+  document.getElementById('detectedHint').classList.remove('show');
+  detectedDate = null;
+}
 
 const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
 if (SpeechRec) {
@@ -197,6 +252,7 @@ if (SpeechRec) {
     for (let i = e.resultIndex; i < e.results.length; i++)
       e.results[i].isFinal ? f += e.results[i][0].transcript : x += e.results[i][0].transcript;
     document.getElementById('entryInput').value = (f || x).trim();
+    autoDetect();
   };
   recognition.onend = () => { listening = false; setMicState(false); };
   recognition.onerror = () => { listening = false; setMicState(false); };
@@ -205,9 +261,10 @@ if (SpeechRec) {
 }
 
 function toggleMic() {
-  if (!recognition) { showToast('Voice not supported — please type'); return; }
+  if (!recognition) { showToast('Voice not supported — type instead'); return; }
   if (listening) { recognition.stop(); return; }
   document.getElementById('entryInput').value = '';
+  hideHint();
   recognition.start(); listening = true; setMicState(true);
 }
 
@@ -219,7 +276,7 @@ function setMicState(on) {
 
 function selectType(t) {
   selectedType = t;
-  const labels = { meeting: '📅 Meeting', task: '✅ Task', reminder: '🔔 Reminder', note: '📝 Note' };
+  const labels = { meeting:'📅 Meeting', task:'✅ Task', reminder:'🔔 Reminder', note:'📝 Note' };
   ['meeting','task','reminder','note'].forEach(x => {
     const c = document.getElementById('chip-' + x);
     c.className = 'type-chip' + (x === t ? ' sel-' + x : '');
@@ -230,20 +287,35 @@ function selectType(t) {
 function addEntry() {
   const text = document.getElementById('entryInput').value.trim();
   if (!text) { showToast('Please type or speak something'); return; }
+
+  // Use detected date or current view date
+  const targetDate = detectedDate || viewDate;
   const now = new Date();
+
   const entry = {
     id: Date.now(),
     type: selectedType,
     text,
-    dateKey: dateKey(viewDate),
-    time: now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }),
+    dateKey: dateKey(targetDate),
+    time: now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' }),
     timestamp: now.getTime(),
     done: false
   };
+
   entries.unshift(entry);
-  save(); renderAll();
+  save(); 
+
+  // Navigate to the target date
+  viewDate = new Date(targetDate); viewDate.setHours(0,0,0,0);
+  currentFilter = 'all';
+  ['all','meeting','task','reminder','note'].forEach(x => document.getElementById('ftab-' + x).classList.toggle('active', x === 'all'));
+
+  renderAll();
   document.getElementById('entryInput').value = '';
-  showToast('Added ✓');
+  hideHint();
+
+  const dateLabel = dateKey(targetDate) === dateKey(new Date()) ? 'today' : targetDate.toLocaleDateString('en-AU', { weekday:'short', day:'numeric', month:'short' });
+  showToast('Added to ' + dateLabel + ' ✓');
 }
 
 function toggleDone(id) {
@@ -257,7 +329,7 @@ function deleteEntry(id) {
 }
 
 function changeDay(n) {
-  viewDate.setDate(viewDate.getDate() + n);
+  viewDate = new Date(viewDate); viewDate.setDate(viewDate.getDate() + n);
   currentFilter = 'all';
   ['all','meeting','task','reminder','note'].forEach(x => document.getElementById('ftab-' + x).classList.toggle('active', x === 'all'));
   renderAll();
@@ -281,32 +353,24 @@ function getDayEntries() {
 }
 
 function renderAll() {
-  const dk = dateKey(viewDate);
-  const isToday = dk === dateKey(new Date());
-
-  // Nav
-  document.getElementById('navDay').textContent = viewDate.toLocaleDateString('en-AU', { weekday: 'long' }) + (isToday ? ' — Today' : '');
-  document.getElementById('navDate').textContent = viewDate.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
-
-  // Day header
-  document.getElementById('dhDay').textContent = viewDate.toLocaleDateString('en-AU', { weekday: 'long' });
+  const isToday = dateKey(viewDate) === dateKey(new Date());
+  document.getElementById('navDay').textContent = viewDate.toLocaleDateString('en-AU', { weekday:'long' }) + (isToday ? ' — Today' : '');
+  document.getElementById('navDate').textContent = viewDate.toLocaleDateString('en-AU', { day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('dhDay').textContent = viewDate.toLocaleDateString('en-AU', { weekday:'long' });
   document.getElementById('dhNum').textContent = viewDate.getDate();
-  document.getElementById('dhMonth').textContent = viewDate.toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
+  document.getElementById('dhMonth').textContent = viewDate.toLocaleDateString('en-AU', { month:'long', year:'numeric' });
 
-  // Stats (all time)
   ['meeting','task','reminder','note'].forEach(t => {
     document.getElementById('s' + t.charAt(0).toUpperCase() + t.slice(1)).textContent = entries.filter(e => e.type === t).length;
   });
   document.getElementById('totalCount').textContent = entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies') + ' total';
 
-  // Day badges
   const dayE = getDayEntries();
   document.getElementById('dhCount').textContent = dayE.length;
-  const badgeTypes = ['meeting','task','reminder','note'];
-  const badgeLabels = { meeting:'Meetings', task:'Tasks', reminder:'Reminders', note:'Notes' };
-  document.getElementById('dhBadges').innerHTML = badgeTypes
+  const bLabels = { meeting:'Meetings', task:'Tasks', reminder:'Reminders', note:'Notes' };
+  document.getElementById('dhBadges').innerHTML = ['meeting','task','reminder','note']
     .filter(t => dayE.filter(e => e.type === t).length > 0)
-    .map(t => `<span class="day-badge db-${t}">${dayE.filter(e=>e.type===t).length} ${badgeLabels[t]}</span>`)
+    .map(t => `<span class="day-badge db-${t}">${dayE.filter(e=>e.type===t).length} ${bLabels[t]}</span>`)
     .join('');
 
   renderTimeline();
@@ -320,7 +384,8 @@ function renderTimeline() {
 
   if (!dayE.length) {
     const isToday = dateKey(viewDate) === dateKey(new Date());
-    tl.innerHTML = `<div class="timeline-empty"><span class="big">${currentFilter === 'all' ? '📔' : {meeting:'📅',task:'✅',reminder:'🔔',note:'📝'}[currentFilter]}</span>${isToday ? 'Nothing added yet today.<br>Speak or type above!' : 'No entries for this day.'}</div>`;
+    const icons = { all:'📔', meeting:'📅', task:'✅', reminder:'🔔', note:'📝' };
+    tl.innerHTML = `<div class="timeline-empty"><span class="big">${icons[currentFilter]}</span>${isToday ? 'Nothing here yet.<br>Speak or type above!' : 'No entries for this day.'}</div>`;
     return;
   }
 
@@ -337,8 +402,8 @@ function renderTimeline() {
           <span class="tl-badge badge-${e.type}">${e.type}</span>
         </div>
         <div class="tl-actions">
-          <button class="tl-btn" onclick="toggleDone(${e.id})" aria-label="Toggle done">${e.done ? '↩️ Undo' : '✓ Done'}</button>
-          <button class="tl-btn" onclick="deleteEntry(${e.id})" aria-label="Delete">🗑 Delete</button>
+          <button class="tl-btn" onclick="toggleDone(${e.id})">${e.done ? '↩️ Undo' : '✓ Done'}</button>
+          <button class="tl-btn" onclick="deleteEntry(${e.id})">🗑 Delete</button>
         </div>
       </div>
     </div>
@@ -348,7 +413,7 @@ function renderTimeline() {
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 renderAll();
