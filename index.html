@@ -340,9 +340,10 @@ function selectType(t) {
 function addEntry() {
   const raw = document.getElementById('entryInput').value.trim();
   if (!raw) { showToast('Please type or speak something'); return; }
+  // Always re-parse fresh from raw text — never rely on stale globals
   const cleaned = cleanText(raw);
+  const timeSlot = parseTime(raw);
   const targetDate = detectedDate || viewDate;
-  const timeSlot = detectedTime;
   const now = new Date();
   const entry = {
     id: Date.now(),
@@ -350,8 +351,8 @@ function addEntry() {
     text: cleaned,
     rawText: raw,
     dateKey: dateKey(targetDate),
-    slotH: timeSlot ? timeSlot.h : null,
-    slotM: timeSlot ? timeSlot.m : null,
+    slotH: timeSlot !== null ? timeSlot.h : null,
+    slotM: timeSlot !== null ? timeSlot.m : null,
     addedTime: now.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}),
     timestamp: now.getTime(),
     done: false
