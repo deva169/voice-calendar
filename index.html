@@ -543,16 +543,39 @@ function confirmDelete(id){
   }
 }
 
-let _pendingActions=[];
-function showModal(msg,btns,extraHtml=''){
-  _pendingActions=btns.map(b=>b.action);
-  document.getElementById('modalMsg').textContent=msg;
-  document.getElementById('modalBtns').innerHTML=(extraHtml||'')+btns.map((b,i)=>`<button class="modal-btn ${b.cls}" onclick="handleModal(${i})">${b.label}</button>`).join('');
+// Store actions by key to avoid closure issues
+window._modalActions = {};
+
+function showModal(msg, btns, extraHtml) {
+  extraHtml = extraHtml || '';
+  // Store each action on window with a unique key
+  const keys = btns.map((b, i) => {
+    const key = 'mact_' + Date.now() + '_' + i;
+    window._modalActions[key] = b.action;
+    return key;
+  });
+  document.getElementById('modalMsg').textContent = msg;
+  document.getElementById('modalBtns').innerHTML = extraHtml + btns.map((b, i) =>
+    '<button class="modal-btn ' + b.cls + '" onclick="runModalAction('' + keys[i] + '')">' + b.label + '</button>'
+  ).join('');
   document.getElementById('modalOverlay').classList.add('open');
-  document.getElementById('modalSheet').style.display='block';
+  document.getElementById('modalSheet').style.display = 'block';
 }
-function handleModal(i){closeModal();if(_pendingActions[i]) _pendingActions[i]();}
-function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.getElementById('modalSheet').style.display='none';_pendingActions=[];}
+
+function runModalAction(key) {
+  closeModal();
+  if (window._modalActions[key]) {
+    const fn = window._modalActions[key];
+    // Clean up all modal actions
+    Object.keys(window._modalActions).forEach(k => delete window._modalActions[k]);
+    fn();
+  }
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('modalSheet').style.display = 'none';
+}
 
 function switchView(v){
   currentView=v;
