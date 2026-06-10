@@ -37,6 +37,8 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
 @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(216,90,48,0.3);}50%{box-shadow:0 0 0 10px rgba(216,90,48,0);} }
 .add-btn { width: 46px; height: 46px; border-radius: 12px; border: none; background: #1a1a1a; color: white; cursor: pointer; font-size: 26px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .listen-hint { font-size: 12px; color: #D85A30; margin-top: 6px; display: none; }
+#periodInputs { display: none; }
+#periodInputs.open { display: flex; flex-direction: column; }
 .listen-hint.show { display: block; }
 .detected-hint { font-size: 12px; color: #085041; margin-top: 6px; display: none; padding: 6px 10px; background: #E1F5EE; border-radius: 8px; }
 .detected-hint.show { display: block; }
@@ -143,6 +145,74 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
     </div>
     <div class="listen-hint" id="listenHint">🔴 Listening... tap mic to stop</div>
     <div class="detected-hint" id="detectedHint"></div>
+
+    <!-- Recurring -->
+    <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:12px;color:#888;white-space:nowrap;">🔁 Repeat:</span>
+      <select id="recurSelect" style="flex:1;border:1.5px solid #e0e0e0;border-radius:10px;padding:6px 10px;font-size:12px;color:#1a1a1a;background:#fafafa;">
+        <option value="">No repeat</option>
+        <option value="daily">Every day</option>
+        <option value="weekdays">Weekdays (Mon–Fri)</option>
+        <option value="weekly">Every week</option>
+        <option value="fortnightly">Fortnightly</option>
+        <option value="monthly">Every month</option>
+      </select>
+    </div>
+
+    <!-- Period / Multi-day event -->
+    <div style="margin-top:10px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:12px;color:#888;">📆 Period / Multi-day:</span>
+        <button onclick="togglePeriod()" id="periodToggle" style="font-size:11px;padding:3px 10px;border-radius:10px;border:1.5px solid #e0e0e0;background:#fafafa;color:#888;cursor:pointer;">+ Add dates</button>
+      </div>
+      <div id="periodInputs" style="display:none;gap:8px;flex-wrap:wrap;">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:12px;color:#888;">From</span>
+            <input type="date" id="periodStart" style="border:1.5px solid #e0e0e0;border-radius:10px;padding:5px 8px;font-size:12px;color:#1a1a1a;background:#fafafa;">
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:12px;color:#888;">To</span>
+            <input type="date" id="periodEnd" style="border:1.5px solid #e0e0e0;border-radius:10px;padding:5px 8px;font-size:12px;color:#1a1a1a;background:#fafafa;">
+          </div>
+        </div>
+        <div style="margin-top:6px;">
+          <span style="font-size:11px;color:#888;">Or pick a known event: </span>
+          <select id="knownEvents" onchange="pickKnownEvent()" style="border:1.5px solid #e0e0e0;border-radius:8px;padding:4px 8px;font-size:11px;color:#1a1a1a;background:#fafafa;margin-top:4px;">
+            <option value="">-- Quick pick --</option>
+            <optgroup label="WA School Terms 2026">
+              <option value="2026-01-29|2026-04-09">Term 1 2026</option>
+              <option value="2026-04-27|2026-07-03">Term 2 2026</option>
+              <option value="2026-07-20|2026-09-25">Term 3 2026</option>
+              <option value="2026-10-12|2026-12-11">Term 4 2026</option>
+            </optgroup>
+            <optgroup label="WA School Terms 2027">
+              <option value="2027-02-01|2027-04-01">Term 1 2027</option>
+              <option value="2027-04-26|2027-07-02">Term 2 2027</option>
+              <option value="2027-07-19|2027-09-24">Term 3 2027</option>
+              <option value="2027-10-11|2027-12-10">Term 4 2027</option>
+            </optgroup>
+            <optgroup label="Indian Festivals">
+              <option value="2026-11-08|2026-11-08">Diwali 2026 (8 Nov)</option>
+              <option value="2027-10-29|2027-10-29">Diwali 2027 (29 Oct)</option>
+              <option value="2026-03-25|2026-03-25">Holi 2026 (25 Mar)</option>
+              <option value="2027-03-14|2027-03-14">Holi 2027 (14 Mar)</option>
+              <option value="2026-08-27|2026-08-27">Onam 2026 (27 Aug)</option>
+              <option value="2026-09-17|2026-09-17">Ganesh Chaturthi 2026</option>
+              <option value="2026-10-02|2026-10-02">Navratri 2026 starts</option>
+            </optgroup>
+            <optgroup label="Australian Holidays (WA)">
+              <option value="2026-12-25|2026-12-25">Christmas 2026</option>
+              <option value="2026-12-26|2026-12-26">Boxing Day 2026</option>
+              <option value="2027-01-01|2027-01-01">New Year 2027</option>
+              <option value="2026-01-26|2026-01-26">Australia Day 2026</option>
+              <option value="2026-04-03|2026-04-03">Good Friday 2026</option>
+              <option value="2026-04-25|2026-04-25">ANZAC Day 2026</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="day-page">
@@ -340,27 +410,89 @@ function selectType(t) {
   });
 }
 
+function togglePeriod() {
+  const el = document.getElementById('periodInputs');
+  const btn = document.getElementById('periodToggle');
+  const open = el.classList.toggle('open');
+  btn.textContent = open ? '✕ Remove' : '+ Add dates';
+  if (!open) {
+    document.getElementById('periodStart').value = '';
+    document.getElementById('periodEnd').value = '';
+    document.getElementById('knownEvents').value = '';
+  }
+}
+
+function pickKnownEvent() {
+  const val = document.getElementById('knownEvents').value;
+  if (!val) return;
+  const [start, end] = val.split('|');
+  document.getElementById('periodStart').value = start;
+  document.getElementById('periodEnd').value = end;
+  // Also pre-fill the text input if empty
+  const sel = document.getElementById('knownEvents');
+  const label = sel.options[sel.selectedIndex].text;
+  if (!document.getElementById('entryInput').value.trim()) {
+    document.getElementById('entryInput').value = label;
+    autoDetect();
+  }
+}
+
 function addEntry() {
   const raw = document.getElementById('entryInput').value.trim();
   if (!raw) { showToast('Please type or speak something'); return; }
-  // Always re-parse fresh from raw text — never rely on stale globals
+  // Always re-parse fresh from raw text
   const cleaned = cleanText(raw);
   const timeSlot = parseTime(raw);
   const targetDate = detectedDate || viewDate;
   const now = new Date();
-  const entry = {
-    id: Date.now(),
+  const recurVal = document.getElementById('recurSelect').value;
+  const periodStart = document.getElementById('periodStart').value;
+  const periodEnd = document.getElementById('periodEnd').value;
+
+  // Generate entries — single or recurring or period
+  const entriesToAdd = [];
+  const baseEntry = {
     type: selectedType,
     text: cleaned,
     rawText: raw,
-    dateKey: dateKey(targetDate),
     slotH: timeSlot !== null ? timeSlot.h : null,
     slotM: timeSlot !== null ? timeSlot.m : null,
     addedTime: now.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}),
     timestamp: now.getTime(),
-    done: false
+    done: false,
+    recur: recurVal || null,
+    isPeriod: !!(periodStart && periodEnd)
   };
-  entries.unshift(entry);
+
+  if (periodStart && periodEnd) {
+    // Multi-day / period — add one entry spanning the period
+    const e = {...baseEntry, id: Date.now(), dateKey: periodStart, periodEnd: periodEnd};
+    entriesToAdd.push(e);
+  } else if (recurVal) {
+    // Recurring — generate next 90 days of occurrences
+    const start = new Date(targetDate);
+    const until = new Date(start); until.setDate(until.getDate() + 90);
+    let cur = new Date(start);
+    let idx = 0;
+    while (cur <= until && idx < 60) {
+      const skip = recurVal === 'weekdays' && (cur.getDay() === 0 || cur.getDay() === 6);
+      if (!skip) {
+        entriesToAdd.push({...baseEntry, id: Date.now() + idx, dateKey: dateKey(cur)});
+      }
+      if (recurVal === 'daily' || recurVal === 'weekdays') cur.setDate(cur.getDate() + 1);
+      else if (recurVal === 'weekly') cur.setDate(cur.getDate() + 7);
+      else if (recurVal === 'fortnightly') cur.setDate(cur.getDate() + 14);
+      else if (recurVal === 'monthly') cur.setMonth(cur.getMonth() + 1);
+      idx++;
+    }
+  } else {
+    entriesToAdd.push({...baseEntry, id: Date.now(), dateKey: dateKey(targetDate)});
+  }
+
+  entries.unshift(...entriesToAdd);
+  // Reset recur and period
+  document.getElementById('recurSelect').value = '';
+  if (document.getElementById('periodInputs').classList.contains('open')) togglePeriod();
   save();
   viewDate = new Date(targetDate); viewDate.setHours(0,0,0,0);
   currentFilter='all';
@@ -415,9 +547,17 @@ function renderTimeline() {
     return;
   }
 
+  // Include period entries that span this day
+  const viewDK = dateKey(viewDate);
+  const allDayPeriod = entries.filter(e => {
+    if (!e.isPeriod || !e.periodEnd) return false;
+    if (currentFilter !== 'all' && e.type !== currentFilter) return false;
+    return e.dateKey <= viewDK && e.periodEnd >= viewDK;
+  });
+
   // Separate timed vs untimed
   const timed = dayE.filter(e=>e.slotH!==null);
-  const untimed = dayE.filter(e=>e.slotH===null);
+  const untimed = [...allDayPeriod.filter(e=>!dayE.find(d=>d.id===e.id)), ...dayE.filter(e=>e.slotH===null)];
 
   // Build slot map
   const slotMap = {};
@@ -456,8 +596,10 @@ function renderTimeline() {
 
       if (entries.length) {
         entries.forEach(e => {
+          const recurBadge = e.recur ? `<span style="font-size:10px;margin-left:4px;opacity:0.7;">🔁</span>` : '';
+          const periodBadge = e.isPeriod ? `<span style="font-size:10px;margin-left:4px;opacity:0.7;">📆</span>` : '';
           html += `<div class="entry-pill ep-${e.type}">
-            <div class="ep-text${e.done?' done':''}">${e.text}</div>
+            <div class="ep-text${e.done?' done':''}">${e.text}${recurBadge}${periodBadge}</div>
             <div class="ep-actions">
               <button class="ep-btn" onclick="toggleDone(${e.id})" title="${e.done?'Undo':'Done'}">${e.done?'↩':'✓'}</button>
               <button class="ep-btn" onclick="deleteEntry(${e.id})" title="Delete">🗑</button>
