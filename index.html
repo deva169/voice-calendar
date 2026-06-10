@@ -556,7 +556,7 @@ function showModal(msg, btns, extraHtml) {
   });
   document.getElementById('modalMsg').textContent = msg;
   document.getElementById('modalBtns').innerHTML = extraHtml + btns.map((b, i) =>
-    '<button class="modal-btn ' + b.cls + '" onclick="runModalAction('' + keys[i] + '')">' + b.label + '</button>'
+    '<button class="modal-btn ' + b.cls + '" onclick="runModalAction(\'' + keys[i] + '\')">' + b.label + '</button>'
   ).join('');
   document.getElementById('modalOverlay').classList.add('open');
   document.getElementById('modalSheet').style.display = 'block';
