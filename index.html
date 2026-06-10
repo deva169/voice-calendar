@@ -8,84 +8,95 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0efe9; min-height: 100vh; }
 .app { max-width: 520px; margin: 0 auto; padding: 20px 16px 80px; }
-.header { margin-bottom: 20px; }
+.header { margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
 .header h1 { font-size: 24px; font-weight: 700; color: #1a1a1a; }
-.header .sub { font-size: 13px; color: #888; margin-top: 2px; }
-.nav { display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 16px; padding: 10px 14px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-.nav-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #888; padding: 4px 8px; border-radius: 8px; }
-.nav-btn:hover { background: #f5f5f7; color: #1a1a1a; }
+.header .sub { font-size: 12px; color: #888; margin-top: 2px; }
+.nav { display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 16px; padding: 10px 14px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+.nav-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: #888; padding: 2px 8px; border-radius: 8px; }
 .nav-center { text-align: center; }
-.nav-day { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+.nav-day { font-size: 15px; font-weight: 700; color: #1a1a1a; }
 .nav-date { font-size: 12px; color: #888; margin-top: 1px; }
 .today-btn { font-size: 12px; color: #534AB7; background: #EEEDFE; border: none; border-radius: 8px; padding: 4px 10px; cursor: pointer; font-weight: 600; }
-.stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 16px; }
-.stat { background: white; border-radius: 12px; padding: 10px 6px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.stat-num { font-size: 20px; font-weight: 700; color: #1a1a1a; }
-.stat-label { font-size: 10px; color: #888; margin-top: 2px; }
-.input-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.type-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+.stat { background: white; border-radius: 12px; padding: 8px 6px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stat-num { font-size: 18px; font-weight: 700; color: #1a1a1a; }
+.stat-label { font-size: 10px; color: #888; margin-top: 1px; }
+.input-card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.type-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
 .type-chip { padding: 5px 11px; border-radius: 20px; border: 1.5px solid #e0e0e0; font-size: 12px; cursor: pointer; color: #888; background: #fafafa; }
 .type-chip.sel-meeting { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; font-weight: 700; }
 .type-chip.sel-task { background: #E1F5EE; color: #085041; border-color: #5DCAA5; font-weight: 700; }
 .type-chip.sel-reminder { background: #FAEEDA; color: #633806; border-color: #EF9F27; font-weight: 700; }
 .type-chip.sel-note { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; font-weight: 700; }
 .input-row { display: flex; gap: 8px; align-items: flex-end; }
-textarea { flex: 1; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 11px 13px; font-size: 15px; color: #1a1a1a; background: #fafafa; resize: none; font-family: inherit; line-height: 1.5; min-height: 56px; }
+textarea { flex: 1; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 10px 12px; font-size: 14px; color: #1a1a1a; background: #fafafa; resize: none; font-family: inherit; line-height: 1.5; min-height: 52px; }
 textarea:focus { outline: none; border-color: #534AB7; background: white; }
-textarea::placeholder { color: #ccc; }
-.mic-btn { width: 48px; height: 48px; border-radius: 50%; border: none; background: #534AB7; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 3px 10px rgba(83,74,183,0.3); font-size: 20px; }
+textarea::placeholder { color: #ccc; font-size: 13px; }
+.mic-btn { width: 46px; height: 46px; border-radius: 50%; border: none; background: #534AB7; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 3px 10px rgba(83,74,183,0.3); font-size: 20px; }
 .mic-btn.listening { background: #D85A30; animation: pulse 1.2s infinite; }
-@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(216,90,48,0.3); } 50% { box-shadow: 0 0 0 10px rgba(216,90,48,0); } }
-.add-btn { width: 48px; height: 48px; border-radius: 12px; border: none; background: #1a1a1a; color: white; cursor: pointer; font-size: 26px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.listen-hint { font-size: 12px; color: #D85A30; margin-top: 8px; display: none; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(216,90,48,0.3);}50%{box-shadow:0 0 0 10px rgba(216,90,48,0);} }
+.add-btn { width: 46px; height: 46px; border-radius: 12px; border: none; background: #1a1a1a; color: white; cursor: pointer; font-size: 26px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.listen-hint { font-size: 12px; color: #D85A30; margin-top: 6px; display: none; }
 .listen-hint.show { display: block; }
-.detected-hint { font-size: 12px; color: #1D9E75; margin-top: 6px; display: none; padding: 6px 10px; background: #E1F5EE; border-radius: 8px; }
+.detected-hint { font-size: 12px; color: #085041; margin-top: 6px; display: none; padding: 6px 10px; background: #E1F5EE; border-radius: 8px; }
 .detected-hint.show { display: block; }
+
+/* Day page */
 .day-page { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.day-header { background: #1a1a1a; color: white; padding: 16px 18px; }
+.day-header { background: #1a1a1a; color: white; padding: 14px 18px; }
 .day-header-top { display: flex; align-items: center; justify-content: space-between; }
-.day-name { font-size: 22px; font-weight: 700; }
-.day-num { font-size: 40px; font-weight: 700; line-height: 1; }
-.day-month { font-size: 14px; color: #aaa; margin-top: 2px; }
+.day-name { font-size: 20px; font-weight: 700; }
+.day-num { font-size: 36px; font-weight: 700; line-height: 1; }
+.day-month { font-size: 13px; color: #aaa; margin-top: 2px; }
 .day-badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
 .day-badge { font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
 .db-meeting { background: #3C3489; color: #EEEDFE; }
 .db-task { background: #085041; color: #E1F5EE; }
 .db-reminder { background: #633806; color: #FAEEDA; }
 .db-note { background: #0C447C; color: #E6F1FB; }
-.filter-tabs { display: flex; gap: 6px; padding: 14px 18px 0; overflow-x: auto; }
+.filter-tabs { display: flex; gap: 6px; padding: 12px 16px 0; overflow-x: auto; }
 .filter-tabs::-webkit-scrollbar { display: none; }
 .ftab { padding: 5px 12px; border-radius: 16px; border: 1.5px solid #e8e8e8; background: white; color: #888; font-size: 12px; cursor: pointer; white-space: nowrap; }
 .ftab.active { background: #1a1a1a; color: white; border-color: #1a1a1a; font-weight: 600; }
-.timeline { padding: 16px 18px; }
+
+/* Timeline slots */
+.timeline { padding: 12px 0 12px; }
+.slot { display: flex; min-height: 44px; border-bottom: 1px solid #f5f5f5; }
+.slot:last-child { border-bottom: none; }
+.slot-time { width: 52px; flex-shrink: 0; padding: 8px 0 8px 16px; font-size: 11px; font-weight: 600; color: #bbb; text-align: right; padding-right: 10px; line-height: 1.2; }
+.slot-time.half { font-size: 10px; color: #ddd; }
+.slot-line { width: 1px; background: #f0f0f0; flex-shrink: 0; position: relative; }
+.slot-line .dot { position: absolute; top: 10px; left: -4px; width: 9px; height: 9px; border-radius: 50%; background: #e8e8e8; }
+.slot-line .dot.has-entry { background: #534AB7; }
+.slot-line .dot.has-task { background: #1D9E75; }
+.slot-line .dot.has-reminder { background: #BA7517; }
+.slot-line .dot.has-note { background: #378ADD; }
+.slot-content { flex: 1; padding: 6px 14px 6px 10px; display: flex; flex-direction: column; gap: 4px; justify-content: center; }
+.slot-empty { min-height: 44px; }
+
+/* Entry pills in slots */
+.entry-pill { border-radius: 10px; padding: 7px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ep-meeting { background: #EEEDFE; border-left: 3px solid #534AB7; }
+.ep-task { background: #E1F5EE; border-left: 3px solid #1D9E75; }
+.ep-reminder { background: #FAEEDA; border-left: 3px solid #BA7517; }
+.ep-note { background: #E6F1FB; border-left: 3px solid #378ADD; }
+.ep-text { font-size: 13px; font-weight: 500; flex: 1; line-height: 1.3; }
+.ep-text.done { text-decoration: line-through; opacity: 0.5; }
+.ep-meeting .ep-text { color: #3C3489; }
+.ep-task .ep-text { color: #085041; }
+.ep-reminder .ep-text { color: #633806; }
+.ep-note .ep-text { color: #0C447C; }
+.ep-actions { display: flex; gap: 3px; }
+.ep-btn { background: none; border: none; cursor: pointer; font-size: 13px; padding: 2px 4px; border-radius: 5px; opacity: 0.6; }
+.ep-btn:hover { opacity: 1; background: rgba(0,0,0,0.05); }
+.no-time-section { padding: 10px 16px; border-top: 1px dashed #f0efe9; margin-top: 4px; }
+.no-time-label { font-size: 11px; color: #bbb; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+
 .timeline-empty { text-align: center; padding: 2.5rem 1rem; color: #ccc; font-size: 14px; }
-.timeline-empty .big { font-size: 40px; display: block; margin-bottom: 10px; }
-.tl-item { display: flex; gap: 14px; margin-bottom: 16px; }
-.tl-item:last-child { margin-bottom: 0; }
-.tl-left { display: flex; flex-direction: column; align-items: center; width: 48px; flex-shrink: 0; }
-.tl-time { font-size: 12px; font-weight: 600; color: #888; white-space: nowrap; }
-.tl-dot { width: 12px; height: 12px; border-radius: 50%; margin: 4px 0; flex-shrink: 0; }
-.tl-line { width: 2px; background: #f0efe9; flex: 1; min-height: 20px; }
-.dot-meeting { background: #534AB7; }
-.dot-task { background: #1D9E75; }
-.dot-reminder { background: #BA7517; }
-.dot-note { background: #378ADD; }
-.tl-card { flex: 1; background: #fafafa; border-radius: 12px; padding: 11px 13px; border-left: 3px solid #e0e0e0; }
-.tl-card.type-meeting { border-left-color: #534AB7; }
-.tl-card.type-task { border-left-color: #1D9E75; }
-.tl-card.type-reminder { border-left-color: #BA7517; }
-.tl-card.type-note { border-left-color: #378ADD; }
-.tl-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.tl-text { font-size: 14px; color: #1a1a1a; line-height: 1.4; flex: 1; }
-.tl-text.done { text-decoration: line-through; color: #aaa; }
-.tl-badge { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
-.badge-meeting { background: #EEEDFE; color: #3C3489; }
-.badge-task { background: #E1F5EE; color: #085041; }
-.badge-reminder { background: #FAEEDA; color: #633806; }
-.badge-note { background: #E6F1FB; color: #0C447C; }
-.tl-actions { display: flex; gap: 4px; margin-top: 8px; }
-.tl-btn { background: none; border: none; cursor: pointer; color: #ccc; font-size: 13px; padding: 3px 8px; border-radius: 6px; border: 1px solid #eee; }
-.tl-btn:hover { background: #f0efe9; color: #1a1a1a; }
+.timeline-empty .big { font-size: 36px; display: block; margin-bottom: 8px; }
+.current-time-line { height: 2px; background: #D85A30; position: relative; margin: 0 14px 0 62px; }
+.current-time-line::before { content: ''; position: absolute; left: -4px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #D85A30; }
+
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 24px; font-size: 14px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.show { opacity: 1; }
 </style>
@@ -93,8 +104,10 @@ textarea::placeholder { color: #ccc; }
 <body>
 <div class="app">
   <div class="header">
-    <h1>📔 My Diary</h1>
-    <div class="sub" id="totalCount">0 entries total</div>
+    <div>
+      <h1>📔 My Diary</h1>
+      <div class="sub" id="totalCount">0 entries total</div>
+    </div>
   </div>
 
   <div class="nav">
@@ -124,10 +137,8 @@ textarea::placeholder { color: #ccc; }
       <span class="type-chip" id="chip-note" onclick="selectType('note')">📝 Note</span>
     </div>
     <div class="input-row">
-      <textarea id="entryInput" rows="2" placeholder='Say "task - call supplier tomorrow" or "reminder - pay rent Friday"...' oninput="autoDetect()"></textarea>
-      <button class="mic-btn" id="micBtn" onclick="toggleMic()">
-        <span id="micIcon">🎙️</span>
-      </button>
+      <textarea id="entryInput" rows="2" placeholder='e.g. "task submit bank documents tomorrow 10am"' oninput="autoDetect()"></textarea>
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()"><span id="micIcon">🎙️</span></button>
       <button class="add-btn" onclick="addEntry()">+</button>
     </div>
     <div class="listen-hint" id="listenHint">🔴 Listening... tap mic to stop</div>
@@ -143,13 +154,12 @@ textarea::placeholder { color: #ccc; }
           <div class="day-month" id="dhMonth"></div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:12px;color:#aaa;">Entries</div>
-          <div style="font-size:28px;font-weight:700;" id="dhCount">0</div>
+          <div style="font-size:11px;color:#aaa;">Entries</div>
+          <div style="font-size:26px;font-weight:700;" id="dhCount">0</div>
         </div>
       </div>
       <div class="day-badges" id="dhBadges"></div>
     </div>
-
     <div class="filter-tabs">
       <div class="ftab active" id="ftab-all" onclick="filterType('all')">All</div>
       <div class="ftab" id="ftab-meeting" onclick="filterType('meeting')">📅 Meetings</div>
@@ -157,90 +167,126 @@ textarea::placeholder { color: #ccc; }
       <div class="ftab" id="ftab-reminder" onclick="filterType('reminder')">🔔 Reminders</div>
       <div class="ftab" id="ftab-note" onclick="filterType('note')">📝 Notes</div>
     </div>
-
     <div class="timeline" id="timeline"></div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-let entries = JSON.parse(localStorage.getItem('diary_v2') || '[]');
+let entries = JSON.parse(localStorage.getItem('diary_v3') || '[]');
 let selectedType = 'meeting', currentFilter = 'all', recognition = null, listening = false;
 let viewDate = new Date(); viewDate.setHours(0,0,0,0);
-let detectedDate = null;
+let detectedDate = null, detectedTime = null;
 
-function dateKey(d) {
-  const dd = new Date(d); dd.setHours(0,0,0,0);
-  return dd.toISOString().split('T')[0];
+function dateKey(d) { const dd=new Date(d); dd.setHours(0,0,0,0); return dd.toISOString().split('T')[0]; }
+
+// Clean text — strip type keywords, date/time words, keep the actual activity
+function cleanText(raw) {
+  let t = raw;
+  // Remove type keywords at start
+  t = t.replace(/^(task|todo|to do|to-do|meeting|reminder|remind me|note|notes)\s*[-:–]?\s*/i, '');
+  // Remove date phrases
+  t = t.replace(/\b(today|tomorrow|yesterday|next week|this week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/gi, '');
+  // Remove time phrases
+  t = t.replace(/\b(at\s+)?\d{1,2}(:\d{2})?\s*(am|pm)\b/gi, '');
+  t = t.replace(/\b(morning|afternoon|evening|night|midnight|noon)\b/gi, '');
+  t = t.replace(/\b(early|late|in the)\b/gi, '');
+  // Remove day ordinals
+  t = t.replace(/\b\d{1,2}(st|nd|rd|th)\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*/gi, '');
+  // Capitalise first letter, trim
+  t = t.replace(/\s+/g, ' ').trim();
+  t = t.replace(/^[-–,\s]+/, '').trim();
+  if (t.length > 0) t = t.charAt(0).toUpperCase() + t.slice(1);
+  return t || raw.trim();
 }
 
-// Auto-detect type and date from text
+// Round minutes to nearest 30
+function roundToSlot(h, m) {
+  return m < 15 ? { h, m: 0 } : m < 45 ? { h, m: 30 } : { h: h+1, m: 0 };
+}
+
+// Parse time from text, return {h, m} or null
+function parseTime(text) {
+  const t = text.toLowerCase();
+  // "10am", "10:30am", "10 am"
+  const explicit = t.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/);
+  if (explicit) {
+    let h = parseInt(explicit[1]), m = parseInt(explicit[2] || '0');
+    if (explicit[3] === 'pm' && h !== 12) h += 12;
+    if (explicit[3] === 'am' && h === 12) h = 0;
+    const s = roundToSlot(h, m);
+    return s;
+  }
+  if (/\b(early morning|dawn)\b/.test(t)) return { h: 7, m: 0 };
+  if (/\bmorning\b/.test(t)) return { h: 9, m: 0 };
+  if (/\bmid.?morning\b/.test(t)) return { h: 10, m: 30 };
+  if (/\bnoon|midday\b/.test(t)) return { h: 12, m: 0 };
+  if (/\blunch\b/.test(t)) return { h: 12, m: 30 };
+  if (/\bafternoon\b/.test(t)) return { h: 14, m: 0 };
+  if (/\bevening\b/.test(t)) return { h: 18, m: 0 };
+  if (/\bnight\b/.test(t)) return { h: 20, m: 0 };
+  return null;
+}
+
+function slotKey(h, m) { return h * 60 + m; }
+
 function autoDetect() {
   const text = document.getElementById('entryInput').value.toLowerCase();
   if (!text.trim()) { hideHint(); return; }
 
-  // Detect type
   let detType = null;
-  if (/\b(task|todo|to do|to-do|do this|action|complete|finish|submit|send|call|email|buy|get|check|update)\b/.test(text)) detType = 'task';
-  else if (/\b(remind|reminder|don't forget|dont forget|alert|notify)\b/.test(text)) detType = 'reminder';
-  else if (/\b(note|notes|idea|thought|memo|remember|jot|write down)\b/.test(text)) detType = 'note';
-  else if (/\b(meeting|meet|call with|zoom|teams|appointment|interview|session|catch up|catchup|discussion|standup)\b/.test(text)) detType = 'meeting';
-
+  if (/\b(task|todo|to do|to-do|submit|send|call|email|buy|get|check|update|finish|complete|action)\b/.test(text)) detType = 'task';
+  else if (/\b(remind|reminder|don.t forget|dont forget|alert)\b/.test(text)) detType = 'reminder';
+  else if (/\b(note|notes|idea|thought|memo|jot)\b/.test(text)) detType = 'note';
+  else if (/\b(meeting|meet|appointment|interview|zoom|teams|call with|catch ?up|standup|session)\b/.test(text)) detType = 'meeting';
   if (detType) selectType(detType);
 
-  // Detect date
   const today = new Date(); today.setHours(0,0,0,0);
   let dd = null;
-  if (/\btomorrow\b/.test(text)) {
-    dd = new Date(today); dd.setDate(dd.getDate() + 1);
-  } else if (/\byesterday\b/.test(text)) {
-    dd = new Date(today); dd.setDate(dd.getDate() - 1);
-  } else if (/\bnext week\b/.test(text)) {
-    dd = new Date(today); dd.setDate(dd.getDate() + 7);
-  } else if (/\btoday\b/.test(text)) {
-    dd = new Date(today);
-  } else {
+  if (/\btomorrow\b/.test(text)) { dd = new Date(today); dd.setDate(dd.getDate()+1); }
+  else if (/\byesterday\b/.test(text)) { dd = new Date(today); dd.setDate(dd.getDate()-1); }
+  else if (/\bnext week\b/.test(text)) { dd = new Date(today); dd.setDate(dd.getDate()+7); }
+  else if (/\btoday\b/.test(text)) { dd = new Date(today); }
+  else {
     const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    for (let i = 0; i < days.length; i++) {
-      if (new RegExp('\\b' + days[i] + '\\b').test(text)) {
+    for (let i=0; i<days.length; i++) {
+      if (new RegExp('\\b'+days[i]+'\\b').test(text)) {
         dd = new Date(today);
         const diff = (i - today.getDay() + 7) % 7 || 7;
-        dd.setDate(dd.getDate() + diff);
-        break;
+        dd.setDate(dd.getDate() + diff); break;
       }
     }
-    // Check for date patterns like "11th", "12th June" etc
-    const dateMatch = text.match(/(\d{1,2})(st|nd|rd|th)?(\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*)?/i);
-    if (dateMatch && !dd) {
-      const day = parseInt(dateMatch[1]);
-      const months = { jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11 };
-      const month = dateMatch[4] ? months[dateMatch[4].toLowerCase().substring(0,3)] : today.getMonth();
-      if (day >= 1 && day <= 31) {
-        dd = new Date(today.getFullYear(), month !== undefined ? month : today.getMonth(), day);
-        if (dd < today && !dateMatch[4]) dd.setMonth(dd.getMonth() + 1);
+    const dm = text.match(/(\d{1,2})(st|nd|rd|th)?(\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*)?/i);
+    if (dm && !dd) {
+      const day = parseInt(dm[1]);
+      const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+      const month = dm[4] ? months[dm[4].toLowerCase().substring(0,3)] : today.getMonth();
+      if (day>=1 && day<=31) {
+        dd = new Date(today.getFullYear(), month!==undefined?month:today.getMonth(), day);
+        if (dd < today && !dm[4]) dd.setMonth(dd.getMonth()+1);
       }
     }
   }
-
   detectedDate = dd;
+  detectedTime = parseTime(text);
 
-  // Show hint
-  const hintEl = document.getElementById('detectedHint');
-  let hintParts = [];
-  if (detType) hintParts.push('Type: ' + detType);
-  if (dd) hintParts.push('Date: ' + dd.toLocaleDateString('en-AU', { weekday:'short', day:'numeric', month:'short' }));
-  if (hintParts.length) {
-    hintEl.textContent = '✓ Detected — ' + hintParts.join(' · ');
-    hintEl.classList.add('show');
-  } else {
-    hideHint();
-  }
+  const hint = document.getElementById('detectedHint');
+  let parts = [];
+  if (detType) parts.push('Type: ' + detType);
+  if (dd) parts.push('Date: ' + dd.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'}));
+  if (detectedTime) parts.push('Time: ' + formatTime(detectedTime.h, detectedTime.m));
+  const cleaned = cleanText(document.getElementById('entryInput').value);
+  if (cleaned !== document.getElementById('entryInput').value.trim()) parts.push('Entry: "' + cleaned + '"');
+  if (parts.length) { hint.textContent = '✓ ' + parts.join(' · '); hint.classList.add('show'); }
+  else hideHint();
 }
 
-function hideHint() {
-  document.getElementById('detectedHint').classList.remove('show');
-  detectedDate = null;
+function hideHint() { document.getElementById('detectedHint').classList.remove('show'); detectedDate = null; detectedTime = null; }
+
+function formatTime(h, m) {
+  const suffix = h >= 12 ? 'PM' : 'AM';
+  const hh = h > 12 ? h-12 : h === 0 ? 12 : h;
+  return hh + (m > 0 ? ':' + String(m).padStart(2,'0') : '') + ' ' + suffix;
 }
 
 const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -248,172 +294,183 @@ if (SpeechRec) {
   recognition = new SpeechRec();
   recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'en-AU';
   recognition.onresult = e => {
-    let f = '', x = '';
-    for (let i = e.resultIndex; i < e.results.length; i++)
-      e.results[i].isFinal ? f += e.results[i][0].transcript : x += e.results[i][0].transcript;
-    document.getElementById('entryInput').value = (f || x).trim();
+    let f='',x='';
+    for(let i=e.resultIndex;i<e.results.length;i++) e.results[i].isFinal?f+=e.results[i][0].transcript:x+=e.results[i][0].transcript;
+    document.getElementById('entryInput').value = (f||x).trim();
     autoDetect();
   };
-  recognition.onend = () => { listening = false; setMicState(false); };
-  recognition.onerror = () => { listening = false; setMicState(false); };
-} else {
-  document.getElementById('micBtn').style.background = '#ccc';
-}
+  recognition.onend = () => { listening=false; setMicState(false); };
+  recognition.onerror = () => { listening=false; setMicState(false); };
+} else { document.getElementById('micBtn').style.background='#ccc'; }
 
 function toggleMic() {
   if (!recognition) { showToast('Voice not supported — type instead'); return; }
   if (listening) { recognition.stop(); return; }
-  document.getElementById('entryInput').value = '';
-  hideHint();
-  recognition.start(); listening = true; setMicState(true);
+  document.getElementById('entryInput').value = ''; hideHint();
+  recognition.start(); listening=true; setMicState(true);
 }
-
 function setMicState(on) {
-  document.getElementById('micBtn').classList.toggle('listening', on);
-  document.getElementById('micIcon').textContent = on ? '⏹️' : '🎙️';
-  document.getElementById('listenHint').classList.toggle('show', on);
+  document.getElementById('micBtn').classList.toggle('listening',on);
+  document.getElementById('micIcon').textContent = on?'⏹️':'🎙️';
+  document.getElementById('listenHint').classList.toggle('show',on);
 }
-
 function selectType(t) {
-  selectedType = t;
-  const labels = { meeting:'📅 Meeting', task:'✅ Task', reminder:'🔔 Reminder', note:'📝 Note' };
-  ['meeting','task','reminder','note'].forEach(x => {
-    const c = document.getElementById('chip-' + x);
-    c.className = 'type-chip' + (x === t ? ' sel-' + x : '');
-    c.textContent = labels[x];
+  selectedType=t;
+  const labels={meeting:'📅 Meeting',task:'✅ Task',reminder:'🔔 Reminder',note:'📝 Note'};
+  ['meeting','task','reminder','note'].forEach(x=>{
+    const c=document.getElementById('chip-'+x);
+    c.className='type-chip'+(x===t?' sel-'+x:'');
+    c.textContent=labels[x];
   });
 }
 
 function addEntry() {
-  const text = document.getElementById('entryInput').value.trim();
-  if (!text) { showToast('Please type or speak something'); return; }
-
-  // Use detected date or current view date
+  const raw = document.getElementById('entryInput').value.trim();
+  if (!raw) { showToast('Please type or speak something'); return; }
+  const cleaned = cleanText(raw);
   const targetDate = detectedDate || viewDate;
+  const timeSlot = detectedTime;
   const now = new Date();
-
   const entry = {
     id: Date.now(),
     type: selectedType,
-    text,
+    text: cleaned,
+    rawText: raw,
     dateKey: dateKey(targetDate),
-    time: now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' }),
+    slotH: timeSlot ? timeSlot.h : null,
+    slotM: timeSlot ? timeSlot.m : null,
+    addedTime: now.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}),
     timestamp: now.getTime(),
     done: false
   };
-
   entries.unshift(entry);
-  save(); 
-
-  // Navigate to the target date
+  save();
   viewDate = new Date(targetDate); viewDate.setHours(0,0,0,0);
-  currentFilter = 'all';
-  ['all','meeting','task','reminder','note'].forEach(x => document.getElementById('ftab-' + x).classList.toggle('active', x === 'all'));
-
+  currentFilter='all';
+  ['all','meeting','task','reminder','note'].forEach(x=>document.getElementById('ftab-'+x).classList.toggle('active',x==='all'));
   renderAll();
-  document.getElementById('entryInput').value = '';
-  hideHint();
-
-  const dateLabel = dateKey(targetDate) === dateKey(new Date()) ? 'today' : targetDate.toLocaleDateString('en-AU', { weekday:'short', day:'numeric', month:'short' });
-  showToast('Added to ' + dateLabel + ' ✓');
+  document.getElementById('entryInput').value=''; hideHint();
+  const dl = dateKey(targetDate)===dateKey(new Date())?'today':targetDate.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+  const tl = timeSlot ? ' at ' + formatTime(timeSlot.h, timeSlot.m) : '';
+  showToast('Added to ' + dl + tl + ' ✓');
 }
 
-function toggleDone(id) {
-  const e = entries.find(x => x.id === id);
-  if (e) { e.done = !e.done; save(); renderTimeline(); }
-}
-
-function deleteEntry(id) {
-  entries = entries.filter(x => x.id !== id);
-  save(); renderAll();
-}
-
-function changeDay(n) {
-  viewDate = new Date(viewDate); viewDate.setDate(viewDate.getDate() + n);
-  currentFilter = 'all';
-  ['all','meeting','task','reminder','note'].forEach(x => document.getElementById('ftab-' + x).classList.toggle('active', x === 'all'));
-  renderAll();
-}
-
-function goToday() {
-  viewDate = new Date(); viewDate.setHours(0,0,0,0);
-  renderAll();
-}
-
-function filterType(f) {
-  currentFilter = f;
-  ['all','meeting','task','reminder','note'].forEach(x => document.getElementById('ftab-' + x).classList.toggle('active', x === f));
-  renderTimeline();
-}
-
-function save() { localStorage.setItem('diary_v2', JSON.stringify(entries)); }
-
-function getDayEntries() {
-  return entries.filter(e => e.dateKey === dateKey(viewDate));
-}
+function toggleDone(id) { const e=entries.find(x=>x.id===id); if(e){e.done=!e.done;save();renderTimeline();} }
+function deleteEntry(id) { entries=entries.filter(x=>x.id!==id); save(); renderAll(); }
+function changeDay(n) { viewDate=new Date(viewDate); viewDate.setDate(viewDate.getDate()+n); currentFilter='all'; ['all','meeting','task','reminder','note'].forEach(x=>document.getElementById('ftab-'+x).classList.toggle('active',x==='all')); renderAll(); }
+function goToday() { viewDate=new Date(); viewDate.setHours(0,0,0,0); renderAll(); }
+function filterType(f) { currentFilter=f; ['all','meeting','task','reminder','note'].forEach(x=>document.getElementById('ftab-'+x).classList.toggle('active',x===f)); renderTimeline(); }
+function save() { localStorage.setItem('diary_v3',JSON.stringify(entries)); }
+function getDayEntries() { return entries.filter(e=>e.dateKey===dateKey(viewDate)); }
 
 function renderAll() {
-  const isToday = dateKey(viewDate) === dateKey(new Date());
-  document.getElementById('navDay').textContent = viewDate.toLocaleDateString('en-AU', { weekday:'long' }) + (isToday ? ' — Today' : '');
-  document.getElementById('navDate').textContent = viewDate.toLocaleDateString('en-AU', { day:'numeric', month:'long', year:'numeric' });
-  document.getElementById('dhDay').textContent = viewDate.toLocaleDateString('en-AU', { weekday:'long' });
+  const isToday = dateKey(viewDate)===dateKey(new Date());
+  document.getElementById('navDay').textContent = viewDate.toLocaleDateString('en-AU',{weekday:'long'})+(isToday?' — Today':'');
+  document.getElementById('navDate').textContent = viewDate.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('dhDay').textContent = viewDate.toLocaleDateString('en-AU',{weekday:'long'});
   document.getElementById('dhNum').textContent = viewDate.getDate();
-  document.getElementById('dhMonth').textContent = viewDate.toLocaleDateString('en-AU', { month:'long', year:'numeric' });
-
-  ['meeting','task','reminder','note'].forEach(t => {
-    document.getElementById('s' + t.charAt(0).toUpperCase() + t.slice(1)).textContent = entries.filter(e => e.type === t).length;
+  document.getElementById('dhMonth').textContent = viewDate.toLocaleDateString('en-AU',{month:'long',year:'numeric'});
+  ['meeting','task','reminder','note'].forEach(t=>{
+    document.getElementById('s'+t.charAt(0).toUpperCase()+t.slice(1)).textContent=entries.filter(e=>e.type===t).length;
   });
-  document.getElementById('totalCount').textContent = entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies') + ' total';
-
-  const dayE = getDayEntries();
-  document.getElementById('dhCount').textContent = dayE.length;
-  const bLabels = { meeting:'Meetings', task:'Tasks', reminder:'Reminders', note:'Notes' };
-  document.getElementById('dhBadges').innerHTML = ['meeting','task','reminder','note']
-    .filter(t => dayE.filter(e => e.type === t).length > 0)
-    .map(t => `<span class="day-badge db-${t}">${dayE.filter(e=>e.type===t).length} ${bLabels[t]}</span>`)
-    .join('');
-
+  document.getElementById('totalCount').textContent=entries.length+' entr'+(entries.length===1?'y':'ies')+' total';
+  const dayE=getDayEntries();
+  document.getElementById('dhCount').textContent=dayE.length;
+  const bLabels={meeting:'Meetings',task:'Tasks',reminder:'Reminders',note:'Notes'};
+  document.getElementById('dhBadges').innerHTML=['meeting','task','reminder','note']
+    .filter(t=>dayE.filter(e=>e.type===t).length>0)
+    .map(t=>`<span class="day-badge db-${t}">${dayE.filter(e=>e.type===t).length} ${bLabels[t]}</span>`).join('');
   renderTimeline();
 }
 
 function renderTimeline() {
   const tl = document.getElementById('timeline');
   let dayE = getDayEntries();
-  if (currentFilter !== 'all') dayE = dayE.filter(e => e.type === currentFilter);
-  dayE.sort((a,b) => a.timestamp - b.timestamp);
+  if (currentFilter!=='all') dayE=dayE.filter(e=>e.type===currentFilter);
 
   if (!dayE.length) {
-    const isToday = dateKey(viewDate) === dateKey(new Date());
-    const icons = { all:'📔', meeting:'📅', task:'✅', reminder:'🔔', note:'📝' };
-    tl.innerHTML = `<div class="timeline-empty"><span class="big">${icons[currentFilter]}</span>${isToday ? 'Nothing here yet.<br>Speak or type above!' : 'No entries for this day.'}</div>`;
+    const isToday=dateKey(viewDate)===dateKey(new Date());
+    const icons={all:'📔',meeting:'📅',task:'✅',reminder:'🔔',note:'📝'};
+    tl.innerHTML=`<div class="timeline-empty"><span class="big">${icons[currentFilter]}</span>${isToday?'Nothing here yet.<br>Speak or type above!':'No entries for this day.'}</div>`;
     return;
   }
 
-  tl.innerHTML = dayE.map((e, i) => `
-    <div class="tl-item">
-      <div class="tl-left">
-        <div class="tl-time">${e.time}</div>
-        <div class="tl-dot dot-${e.type}"></div>
-        ${i < dayE.length - 1 ? '<div class="tl-line"></div>' : ''}
-      </div>
-      <div class="tl-card type-${e.type}">
-        <div class="tl-card-top">
-          <div class="tl-text${e.done ? ' done' : ''}">${e.text}</div>
-          <span class="tl-badge badge-${e.type}">${e.type}</span>
+  // Separate timed vs untimed
+  const timed = dayE.filter(e=>e.slotH!==null);
+  const untimed = dayE.filter(e=>e.slotH===null);
+
+  // Build slot map
+  const slotMap = {};
+  timed.forEach(e => {
+    const k = slotKey(e.slotH, e.slotM);
+    if (!slotMap[k]) slotMap[k] = [];
+    slotMap[k].push(e);
+  });
+
+  // Find time range: 7am to 9pm, but expand if entries outside
+  let startH = 7, endH = 21;
+  timed.forEach(e => { if(e.slotH < startH) startH=e.slotH; if(e.slotH >= endH) endH=e.slotH+1; });
+
+  const now = new Date();
+  const isToday = dateKey(viewDate)===dateKey(new Date());
+  const nowSlot = isToday ? slotKey(now.getHours(), now.getMinutes()<30?0:30) : -1;
+
+  let html = '';
+  for (let h=startH; h<endH; h++) {
+    for (let m=0; m<60; m+=30) {
+      const sk = slotKey(h,m);
+      const entries = slotMap[sk] || [];
+      const isHour = m===0;
+      const timeLabel = isHour ? formatTime(h,0) : formatTime(h,30);
+      const isNow = sk===nowSlot;
+
+      // Current time line
+      if (isNow) html += `<div class="current-time-line"></div>`;
+
+      const dotClass = entries.length===0 ? '' : 'has-'+entries[0].type;
+
+      html += `<div class="slot">
+        <div class="slot-time ${isHour?'':'half'}">${timeLabel}</div>
+        <div class="slot-line"><div class="dot ${dotClass}"></div></div>
+        <div class="slot-content">`;
+
+      if (entries.length) {
+        entries.forEach(e => {
+          html += `<div class="entry-pill ep-${e.type}">
+            <div class="ep-text${e.done?' done':''}">${e.text}</div>
+            <div class="ep-actions">
+              <button class="ep-btn" onclick="toggleDone(${e.id})" title="${e.done?'Undo':'Done'}">${e.done?'↩':'✓'}</button>
+              <button class="ep-btn" onclick="deleteEntry(${e.id})" title="Delete">🗑</button>
+            </div>
+          </div>`;
+        });
+      }
+      html += `</div></div>`;
+    }
+  }
+
+  // Untimed entries at bottom
+  if (untimed.length) {
+    html += `<div class="no-time-section"><div class="no-time-label">No specific time</div>`;
+    untimed.forEach(e => {
+      html += `<div class="entry-pill ep-${e.type}" style="margin-bottom:6px;">
+        <div class="ep-text${e.done?' done':''}">${e.text}</div>
+        <div class="ep-actions">
+          <button class="ep-btn" onclick="toggleDone(${e.id})">${e.done?'↩':'✓'}</button>
+          <button class="ep-btn" onclick="deleteEntry(${e.id})">🗑</button>
         </div>
-        <div class="tl-actions">
-          <button class="tl-btn" onclick="toggleDone(${e.id})">${e.done ? '↩️ Undo' : '✓ Done'}</button>
-          <button class="tl-btn" onclick="deleteEntry(${e.id})">🗑 Delete</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  tl.innerHTML = html;
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 
 renderAll();
