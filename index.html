@@ -165,7 +165,7 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
         <span style="font-size:12px;color:#888;">📆 Period / Multi-day:</span>
         <button onclick="togglePeriod()" id="periodToggle" style="font-size:11px;padding:3px 10px;border-radius:10px;border:1.5px solid #e0e0e0;background:#fafafa;color:#888;cursor:pointer;">+ Add dates</button>
       </div>
-      <div id="periodInputs" style="display:none;gap:8px;flex-wrap:wrap;">
+      <div id="periodInputs" style="gap:8px;flex-wrap:wrap;">
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <div style="display:flex;align-items:center;gap:4px;">
             <span style="font-size:12px;color:#888;">From</span>
@@ -504,8 +504,88 @@ function addEntry() {
   showToast('Added to ' + dl + tl + ' ✓');
 }
 
+function confirmDone(id) {
+  const e = entries.find(x=>x.id===id);
+  if (!e) return;
+  if (e.done) { e.done=false; save(); renderTimeline(); return; }
+  showConfirm('Mark as done?', '✓ Done', () => { e.done=true; save(); renderTimeline(); });
+}
+
+function confirmDelete(id) {
+  const e = entries.find(x=>x.id===id);
+  if (!e) return;
+  const isRecur = e.recur;
+  if (isRecur) {
+    showConfirm('Delete just this entry or all repeats?', 'This only', () => {
+      entries = entries.filter(x=>x.id!==id); save(); renderAll();
+    }, 'All repeats', () => {
+      entries = entries.filter(x=>!(x.rawText===e.rawText && x.recur===e.recur)); save(); renderAll();
+    });
+  } else {
+    showConfirm('Delete this entry?', '🗑 Delete', () => {
+      entries = entries.filter(x=>x.id!==id); save(); renderAll();
+    });
+  }
+}
+
+function editEntry(id) {
+  const e = entries.find(x=>x.id===id);
+  if (!e) return;
+  const textEl = document.getElementById('text-'+id);
+  if (!textEl) return;
+  // Replace text with inline input
+  const current = e.text;
+  textEl.innerHTML = `<input type="text" id="edit-input-${id}" value="${current.replace(/"/g,'&quot;')}" style="border:1px solid #ccc;border-radius:6px;padding:3px 6px;font-size:13px;width:100%;font-family:inherit;" onkeydown="if(event.key==='Enter')saveEdit(${id});if(event.key==='Escape')cancelEdit(${id},\`${current}\`)">
+    <div style="display:flex;gap:6px;margin-top:4px;">
+      <button onclick="saveEdit(${id})" style="font-size:11px;padding:3px 10px;border-radius:6px;border:none;background:#1D9E75;color:white;cursor:pointer;">Save</button>
+      <button onclick="cancelEdit(${id},\`${current}\`)" style="font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid #ccc;background:white;cursor:pointer;">Cancel</button>
+    </div>`;
+  document.getElementById('edit-input-'+id).focus();
+}
+
+function saveEdit(id) {
+  const e = entries.find(x=>x.id===id);
+  const input = document.getElementById('edit-input-'+id);
+  if (!e || !input) return;
+  const newText = input.value.trim();
+  if (!newText) return;
+  e.text = newText.charAt(0).toUpperCase() + newText.slice(1);
+  save(); renderTimeline();
+  showToast('Updated ✓');
+}
+
+function cancelEdit(id, original) {
+  const textEl = document.getElementById('text-'+id);
+  if (textEl) textEl.innerHTML = original;
+}
+
 function toggleDone(id) { const e=entries.find(x=>x.id===id); if(e){e.done=!e.done;save();renderTimeline();} }
 function deleteEntry(id) { entries=entries.filter(x=>x.id!==id); save(); renderAll(); }
+
+// Confirmation dialog
+function showConfirm(msg, btn1Label, btn1Action, btn2Label, btn2Action) {
+  // Remove existing
+  const existing = document.getElementById('confirmModal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'confirmModal';
+  modal.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:white;border-radius:20px 20px 0 0;padding:20px 16px 32px;box-shadow:0 -4px 24px rgba(0,0,0,0.15);z-index:1000;max-width:520px;margin:0 auto;';
+  
+  let btns = `<button onclick="document.getElementById('confirmModal').remove()" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid #e0e0e0;background:white;color:#888;font-size:15px;cursor:pointer;margin-top:8px;">Cancel</button>`;
+  
+  if (btn2Label) {
+    btns = `<button onclick="document.getElementById('confirmModal').remove();(${btn1Action.toString()})()" style="width:100%;padding:12px;border-radius:12px;border:none;background:#534AB7;color:white;font-size:15px;cursor:pointer;">${btn1Label}</button>
+    <button onclick="document.getElementById('confirmModal').remove();(${btn2Action.toString()})()" style="width:100%;padding:12px;border-radius:12px;border:none;background:#E24B4A;color:white;font-size:15px;cursor:pointer;margin-top:8px;">${btn2Label}</button>
+    <button onclick="document.getElementById('confirmModal').remove()" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid #e0e0e0;background:white;color:#888;font-size:15px;cursor:pointer;margin-top:8px;">Cancel</button>`;
+  } else {
+    btns = `<button onclick="document.getElementById('confirmModal').remove();(${btn1Action.toString()})()" style="width:100%;padding:12px;border-radius:12px;border:none;background:#E24B4A;color:white;font-size:15px;font-weight:600;cursor:pointer;">${btn1Label}</button>
+    <button onclick="document.getElementById('confirmModal').remove()" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid #e0e0e0;background:white;color:#888;font-size:15px;cursor:pointer;margin-top:8px;">Cancel</button>`;
+  }
+  
+  modal.innerHTML = `<div style="font-size:16px;font-weight:600;color:#1a1a1a;margin-bottom:16px;text-align:center;">${msg}</div>${btns}`;
+  document.body.appendChild(modal);
+}
 function changeDay(n) { viewDate=new Date(viewDate); viewDate.setDate(viewDate.getDate()+n); currentFilter='all'; ['all','meeting','task','reminder','note'].forEach(x=>document.getElementById('ftab-'+x).classList.toggle('active',x==='all')); renderAll(); }
 function goToday() { viewDate=new Date(); viewDate.setHours(0,0,0,0); renderAll(); }
 function filterType(f) { currentFilter=f; ['all','meeting','task','reminder','note'].forEach(x=>document.getElementById('ftab-'+x).classList.toggle('active',x===f)); renderTimeline(); }
@@ -598,11 +678,12 @@ function renderTimeline() {
         entries.forEach(e => {
           const recurBadge = e.recur ? `<span style="font-size:10px;margin-left:4px;opacity:0.7;">🔁</span>` : '';
           const periodBadge = e.isPeriod ? `<span style="font-size:10px;margin-left:4px;opacity:0.7;">📆</span>` : '';
-          html += `<div class="entry-pill ep-${e.type}">
-            <div class="ep-text${e.done?' done':''}">${e.text}${recurBadge}${periodBadge}</div>
+          html += `<div class="entry-pill ep-${e.type}" id="pill-${e.id}">
+            <div class="ep-text${e.done?' done':''}" id="text-${e.id}">${e.text}${recurBadge}${periodBadge}</div>
             <div class="ep-actions">
-              <button class="ep-btn" onclick="toggleDone(${e.id})" title="${e.done?'Undo':'Done'}">${e.done?'↩':'✓'}</button>
-              <button class="ep-btn" onclick="deleteEntry(${e.id})" title="Delete">🗑</button>
+              <button class="ep-btn" onclick="editEntry(${e.id})" title="Edit">✏️</button>
+              <button class="ep-btn" onclick="confirmDone(${e.id})" title="${e.done?'Undo':'Done'}">${e.done?'↩':'✓'}</button>
+              <button class="ep-btn" onclick="confirmDelete(${e.id})" title="Delete">🗑</button>
             </div>
           </div>`;
         });
@@ -615,11 +696,14 @@ function renderTimeline() {
   if (untimed.length) {
     html += `<div class="no-time-section"><div class="no-time-label">No specific time</div>`;
     untimed.forEach(e => {
-      html += `<div class="entry-pill ep-${e.type}" style="margin-bottom:6px;">
-        <div class="ep-text${e.done?' done':''}">${e.text}</div>
+      const rb2 = e.recur ? `<span style="font-size:10px;margin-left:4px;opacity:0.7;">🔁</span>` : '';
+      const pb2 = e.isPeriod ? `<span style="font-size:10px;margin-left:4px;opacity:0.7;">📆</span>` : '';
+      html += `<div class="entry-pill ep-${e.type}" style="margin-bottom:6px;" id="pill-${e.id}">
+        <div class="ep-text${e.done?' done':''}" id="text-${e.id}">${e.text}${rb2}${pb2}</div>
         <div class="ep-actions">
-          <button class="ep-btn" onclick="toggleDone(${e.id})">${e.done?'↩':'✓'}</button>
-          <button class="ep-btn" onclick="deleteEntry(${e.id})">🗑</button>
+          <button class="ep-btn" onclick="editEntry(${e.id})">✏️</button>
+          <button class="ep-btn" onclick="confirmDone(${e.id})">${e.done?'↩':'✓'}</button>
+          <button class="ep-btn" onclick="confirmDelete(${e.id})">🗑</button>
         </div>
       </div>`;
     });
