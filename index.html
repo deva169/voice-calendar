@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Voice Calendar – Deva</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f7; min-height: 100vh; }
+
+  .app { max-width: 480px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  h1 { font-size: 22px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+  .subtitle { font-size: 14px; color: #888; margin-bottom: 24px; }
+
+  .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+  .mic-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+
+  .mic-btn { width: 88px; height: 88px; border-radius: 50%; border: none; background: #534AB7; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s, background 0.2s; box-shadow: 0 4px 16px rgba(83,74,183,0.35); }
+  .mic-btn:active { transform: scale(0.93); }
+  .mic-btn.listening { background: #D85A30; box-shadow: 0 4px 16px rgba(216,90,48,0.4); animation: pulse 1.2s infinite; }
+  .mic-btn svg { width: 36px; height: 36px; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(216,90,48,0.35); } 50% { box-shadow: 0 0 0 14px rgba(216,90,48,0); } }
+
+  .mic-status { font-size: 15px; font-weight: 500; color: #555; text-align: center; }
+  .mic-status.active { color: #D85A30; }
+
+  textarea { width: 100%; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 12px 14px; font-size: 15px; color: #1a1a1a; background: #fafafa; resize: none; font-family: inherit; line-height: 1.5; }
+  textarea:focus { outline: none; border-color: #534AB7; background: white; }
+
+  .parse-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: #534AB7; color: white; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s, transform 0.1s; }
+  .parse-btn:active { transform: scale(0.98); background: #3C3489; }
+  .parse-btn:disabled { background: #b0acd8; }
+
+  .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .result-card { display: none; }
+  .result-label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+
+  .field { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+  .field:last-of-type { border-bottom: none; }
+  .field-icon { font-size: 18px; margin-top: 1px; }
+  .field-body { flex: 1; }
+  .field-key { font-size: 11px; color: #999; margin-bottom: 2px; }
+  .field-val { font-size: 15px; color: #1a1a1a; font-weight: 500; }
+
+  .badge { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+  .badge-meeting { background: #EEEDFE; color: #3C3489; }
+  .badge-task { background: #E1F5EE; color: #085041; }
+  .badge-reminder { background: #FAEEDA; color: #633806; }
+  .badge-event { background: #E6F1FB; color: #0C447C; }
+
+  .btn-gcal { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 15px; border-radius: 12px; background: #1a73e8; color: white; font-size: 16px; font-weight: 600; text-decoration: none; margin-top: 14px; transition: background 0.15s; }
+  .btn-gcal:active { background: #1558b0; }
+
+  .btn-discard { width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #e0e0e0; background: white; color: #888; font-size: 15px; cursor: pointer; margin-top: 8px; }
+  .btn-discard:active { background: #f5f5f7; }
+
+  .gcal-hint { font-size: 12px; color: #aaa; text-align: center; margin-top: 8px; }
+
+  .history-title { font-size: 13px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+  .event-item { display: flex; align-items: center; gap: 10px; background: white; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .dot-meeting { background: #534AB7; }
+  .dot-task { background: #1D9E75; }
+  .dot-reminder { background: #BA7517; }
+  .dot-event { background: #378ADD; }
+  .event-info { flex: 1; min-width: 0; }
+  .event-name { font-size: 14px; font-weight: 600; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event-when { font-size: 12px; color: #999; margin-top: 2px; }
+  .event-link { font-size: 12px; color: #1a73e8; text-decoration: none; white-space: nowrap; font-weight: 500; }
+
+  .empty { text-align: center; color: #bbb; font-size: 14px; padding: 24px 0; }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1D9E75; color: white; padding: 10px 20px; border-radius: 24px; font-size: 14px; font-weight: 500; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; z-index: 999; }
+  .toast.show { opacity: 1; }
+
+  .error-box { display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 12px; padding: 12px 14px; font-size: 14px; color: #856404; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🎙️ Voice Calendar</h1>
+  <p class="subtitle">Speak an event — it goes straight to Google Calendar</p>
+
+  <div class="card">
+    <div class="mic-wrap">
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+      <div class="mic-status" id="micStatus">Tap mic to speak</div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <textarea id="textInput" rows="3" placeholder='Or type here: "Meeting with client Friday 3pm"'></textarea>
+    </div>
+
+    <div style="margin-top:12px;">
+      <button class="parse-btn" id="parseBtn" onclick="parseEvent()">
+        <div class="spinner" id="spinner"></div>
+        <span id="parseBtnText">✨ Parse &amp; Add to Calendar</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="card result-card" id="resultCard">
+    <div class="result-label">Your event</div>
+    <div class="field">
+      <span class="field-icon">🏷️</span>
+      <div class="field-body">
+        <div class="field-key">Type</div>
+        <div class="field-val"><span class="badge" id="rType"></span></div>
+      </div>
+    </div>
+    <div class="field">
+      <span class="field-icon">📝</span>
+      <div class="field-body">
+        <div class="field-key">Title</div>
+        <div class="field-val" id="rTitle"></div>
+      </div>
+    </div>
+    <div class="field">
+      <span class="field-icon">📅</span>
+      <div class="field-body">
+        <div class="field-key">Date</div>
+        <div class="field-val" id="rDate"></div>
+      </div>
+    </div>
+    <div class="field">
+      <span class="field-icon">🕐</span>
+      <div class="field-body">
+        <div class="field-key">Time</div>
+        <div class="field-val" id="rTime"></div>
+      </div>
+    </div>
+    <div class="field">
+      <span class="field-icon">🔔</span>
+      <div class="field-body">
+        <div class="field-key">Reminder</div>
+        <div class="field-val" id="rReminder"></div>
+      </div>
+    </div>
+    <a class="btn-gcal" id="gcalLink" href="#" target="_blank" onclick="onSave()">
+      📅 Open in Google Calendar
+    </a>
+    <button class="btn-discard" onclick="discard()">Discard</button>
+    <div class="gcal-hint">Opens pre-filled — just tap Save in Google Calendar</div>
+  </div>
+
+  <div id="historySection" style="display:none;">
+    <div class="history-title">Saved this session</div>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recog = null, listening = false, pending = null, history = [];
+
+if (SpeechRec) {
+  recog = new SpeechRec();
+  recog.continuous = false;
+  recog.interimResults = true;
+  recog.lang = 'en-AU';
+  recog.onresult = e => {
+    let f = '', x = '';
+    for (let i = e.resultIndex; i < e.results.length; i++)
+      e.results[i].isFinal ? f += e.results[i][0].transcript : x += e.results[i][0].transcript;
+    document.getElementById('textInput').value = (f || x).trim();
+  };
+  recog.onend = () => {
+    listening = false;
+    setMicState(false);
+    if (document.getElementById('textInput').value.trim()) setTimeout(parseEvent, 400);
+  };
+  recog.onerror = () => { listening = false; setMicState(false); };
+} else {
+  document.getElementById('micBtn').style.background = '#ccc';
+  document.getElementById('micStatus').textContent = 'Voice not supported — type below';
+}
+
+function toggleMic() {
+  if (!recog) return;
+  if (listening) { recog.stop(); return; }
+  document.getElementById('textInput').value = '';
+  document.getElementById('resultCard').style.display = 'none';
+  recog.start();
+  listening = true;
+  setMicState(true);
+}
+
+function setMicState(on) {
+  const btn = document.getElementById('micBtn');
+  const status = document.getElementById('micStatus');
+  btn.classList.toggle('listening', on);
+  status.textContent = on ? 'Listening… tap to stop' : 'Tap mic to speak';
+  status.className = 'mic-status' + (on ? ' active' : '');
+}
+
+async function parseEvent() {
+  const text = document.getElementById('textInput').value.trim();
+  if (!text) return;
+  const btn = document.getElementById('parseBtn');
+  const sp = document.getElementById('spinner');
+  const bt = document.getElementById('parseBtnText');
+  const err = document.getElementById('errorBox');
+  btn.disabled = true; sp.style.display = 'block'; bt.textContent = 'Parsing…'; err.style.display = 'none';
+  document.getElementById('resultCard').style.display = 'none';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        messages: [{ role: 'user', content: `Today is ${new Date().toDateString()}. Timezone: Australia/Perth (UTC+8).
+Parse this into a calendar event. Return ONLY valid JSON, no markdown:
+{"type":"meeting|task|reminder|event","title":"short title","date":"YYYYMMDD","startTime":"HHmm or empty","endTime":"HHmm or empty","allDay":false,"reminderMinutes":30,"displayDate":"Weekday DD Mon YYYY","displayTime":"H:MM AM/PM or All day","displayReminder":"X minutes/hours before"}
+Input: "${text}"` }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content.map(b => b.text||'').join('').replace(/```json|```/g,'').trim();
+    const p = JSON.parse(raw);
+    pending = p;
+    showResult(p);
+    buildLink(p);
+  } catch(e) {
+    err.textContent = '⚠️ Could not parse. Try again or rephrase.';
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false; sp.style.display = 'none'; bt.textContent = '✨ Parse & Add to Calendar';
+  }
+}
+
+function showResult(p) {
+  const tc = {meeting:'badge-meeting',task:'badge-task',reminder:'badge-reminder',event:'badge-event'};
+  document.getElementById('rType').textContent = p.type||'event';
+  document.getElementById('rType').className = 'badge '+(tc[p.type]||'badge-event');
+  document.getElementById('rTitle').textContent = p.title||'—';
+  document.getElementById('rDate').textContent = p.displayDate||p.date||'—';
+  document.getElementById('rTime').textContent = p.displayTime||'All day';
+  document.getElementById('rReminder').textContent = p.displayReminder||'30 minutes before';
+  document.getElementById('resultCard').style.display = 'block';
+  document.getElementById('resultCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function buildLink(p) {
+  const dates = (p.allDay||!p.startTime) ? `${p.date}/${p.date}` : `${p.date}T${p.startTime}00/${p.date}T${p.endTime||p.startTime}00`;
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(p.title||'')}&dates=${dates}&details=${encodeURIComponent('Added via Voice Calendar')}&sf=true&output=xml`;
+  document.getElementById('gcalLink').href = url;
+}
+
+function onSave() {
+  if (!pending) return;
+  history.unshift({...pending, id: Date.now()});
+  renderHistory();
+  setTimeout(() => { document.getElementById('resultCard').style.display='none'; document.getElementById('textInput').value=''; pending=null; showToast('Opening Google Calendar ✓'); }, 300);
+}
+
+function discard() {
+  document.getElementById('resultCard').style.display = 'none';
+  pending = null;
+}
+
+function renderHistory() {
+  const sec = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+  if (!history.length) { sec.style.display='none'; return; }
+  sec.style.display = 'block';
+  const dc = {meeting:'dot-meeting',task:'dot-task',reminder:'dot-reminder',event:'dot-event'};
+  list.innerHTML = history.map(ev => {
+    const dates = (ev.allDay||!ev.startTime)?`${ev.date}/${ev.date}`:`${ev.date}T${ev.startTime}00/${ev.date}T${ev.endTime||ev.startTime}00`;
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title||'')}&dates=${dates}&sf=true&output=xml`;
+    return `<div class="event-item"><div class="dot ${dc[ev.type]||'dot-event'}"></div><div class="event-info"><div class="event-name">${ev.title}</div><div class="event-when">${ev.displayDate} · ${ev.displayTime}</div></div><a class="event-link" href="${url}" target="_blank">+ GCal</a></div>`;
+  }).join('');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
