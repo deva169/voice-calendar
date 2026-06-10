@@ -6,76 +6,124 @@
 <title>My Diary – Deva</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f7; min-height: 100vh; }
-.app { max-width: 520px; margin: 0 auto; padding: 20px 16px 60px; }
-.top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-h1 { font-size: 22px; font-weight: 600; color: #1a1a1a; }
-.today { font-size: 13px; color: #888; margin-bottom: 20px; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0efe9; min-height: 100vh; }
+.app { max-width: 520px; margin: 0 auto; padding: 20px 16px 80px; }
+
+/* Header */
+.header { margin-bottom: 20px; }
+.header h1 { font-size: 24px; font-weight: 700; color: #1a1a1a; }
+.header .sub { font-size: 13px; color: #888; margin-top: 2px; }
+
+/* Nav */
+.nav { display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 16px; padding: 10px 14px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+.nav-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #888; padding: 4px 8px; border-radius: 8px; }
+.nav-btn:hover { background: #f5f5f7; color: #1a1a1a; }
+.nav-center { text-align: center; }
+.nav-day { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+.nav-date { font-size: 12px; color: #888; margin-top: 1px; }
+.today-btn { font-size: 12px; color: #534AB7; background: #EEEDFE; border: none; border-radius: 8px; padding: 4px 10px; cursor: pointer; font-weight: 600; }
+
+/* Stats */
 .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 16px; }
-.stat { background: white; border-radius: 12px; padding: 10px 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.stat-num { font-size: 20px; font-weight: 600; color: #1a1a1a; }
-.stat-label { font-size: 11px; color: #888; margin-top: 2px; }
-.input-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.stat { background: white; border-radius: 12px; padding: 10px 6px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stat-num { font-size: 20px; font-weight: 700; color: #1a1a1a; }
+.stat-label { font-size: 10px; color: #888; margin-top: 2px; }
+
+/* Input */
+.input-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .type-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-.type-chip { padding: 5px 12px; border-radius: 20px; border: 1.5px solid #e0e0e0; font-size: 13px; cursor: pointer; color: #888; background: #fafafa; transition: all 0.15s; }
-.type-chip.sel-meeting { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; font-weight: 600; }
-.type-chip.sel-task { background: #E1F5EE; color: #085041; border-color: #5DCAA5; font-weight: 600; }
-.type-chip.sel-reminder { background: #FAEEDA; color: #633806; border-color: #EF9F27; font-weight: 600; }
-.type-chip.sel-note { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; font-weight: 600; }
+.type-chip { padding: 5px 11px; border-radius: 20px; border: 1.5px solid #e0e0e0; font-size: 12px; cursor: pointer; color: #888; background: #fafafa; }
+.type-chip.sel-meeting { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; font-weight: 700; }
+.type-chip.sel-task { background: #E1F5EE; color: #085041; border-color: #5DCAA5; font-weight: 700; }
+.type-chip.sel-reminder { background: #FAEEDA; color: #633806; border-color: #EF9F27; font-weight: 700; }
+.type-chip.sel-note { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; font-weight: 700; }
 .input-row { display: flex; gap: 8px; align-items: flex-end; }
 textarea { flex: 1; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 11px 13px; font-size: 15px; color: #1a1a1a; background: #fafafa; resize: none; font-family: inherit; line-height: 1.5; min-height: 56px; }
 textarea:focus { outline: none; border-color: #534AB7; background: white; }
-textarea::placeholder { color: #bbb; }
-.mic-btn { width: 48px; height: 48px; border-radius: 50%; border: none; background: #534AB7; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 3px 10px rgba(83,74,183,0.3); }
+textarea::placeholder { color: #ccc; }
+.mic-btn { width: 48px; height: 48px; border-radius: 50%; border: none; background: #534AB7; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 3px 10px rgba(83,74,183,0.3); font-size: 20px; }
 .mic-btn.listening { background: #D85A30; animation: pulse 1.2s infinite; }
 @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(216,90,48,0.3); } 50% { box-shadow: 0 0 0 10px rgba(216,90,48,0); } }
-.mic-icon { font-size: 22px; }
-.add-btn { width: 48px; height: 48px; border-radius: 12px; border: none; background: #1a1a1a; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 24px; }
-.add-btn:active { background: #333; }
+.add-btn { width: 48px; height: 48px; border-radius: 12px; border: none; background: #1a1a1a; color: white; cursor: pointer; font-size: 26px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .listen-hint { font-size: 12px; color: #D85A30; margin-top: 8px; display: none; }
 .listen-hint.show { display: block; }
-.tabs { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; }
-.tabs::-webkit-scrollbar { display: none; }
-.tab { padding: 7px 14px; border-radius: 20px; border: 1.5px solid #e0e0e0; background: white; color: #888; font-size: 13px; cursor: pointer; white-space: nowrap; }
-.tab.active { background: #1a1a1a; color: white; border-color: #1a1a1a; font-weight: 600; }
-.section-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.section-label { font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.06em; }
-.clear-btn { font-size: 12px; color: #bbb; background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 8px; }
-.clear-btn:hover { color: #E24B4A; background: #fff0f0; }
-.entries { display: flex; flex-direction: column; gap: 8px; }
-.entry { background: white; border-radius: 14px; padding: 13px 14px; display: flex; align-items: flex-start; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-left: 3px solid #e0e0e0; }
-.entry.type-meeting { border-left-color: #534AB7; }
-.entry.type-task { border-left-color: #1D9E75; }
-.entry.type-reminder { border-left-color: #BA7517; }
-.entry.type-note { border-left-color: #378ADD; }
-.entry-body { flex: 1; min-width: 0; }
-.entry-text { font-size: 14px; color: #1a1a1a; line-height: 1.4; }
-.entry-text.done { text-decoration: line-through; color: #aaa; }
-.entry-meta { font-size: 11px; color: #bbb; margin-top: 5px; display: flex; gap: 8px; align-items: center; }
-.badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+
+/* Daily page */
+.day-page { background: white; border-radius: 16px; padding: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+.day-header { background: #1a1a1a; color: white; padding: 16px 18px; }
+.day-header-top { display: flex; align-items: center; justify-content: space-between; }
+.day-name { font-size: 22px; font-weight: 700; }
+.day-num { font-size: 40px; font-weight: 700; line-height: 1; }
+.day-month { font-size: 14px; color: #aaa; margin-top: 2px; }
+.day-badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.day-badge { font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+.db-meeting { background: #3C3489; color: #EEEDFE; }
+.db-task { background: #085041; color: #E1F5EE; }
+.db-reminder { background: #633806; color: #FAEEDA; }
+.db-note { background: #0C447C; color: #E6F1FB; }
+
+/* Timeline */
+.timeline { padding: 16px 18px; }
+.timeline-empty { text-align: center; padding: 2.5rem 1rem; color: #ccc; font-size: 14px; }
+.timeline-empty .big { font-size: 40px; display: block; margin-bottom: 10px; }
+.tl-item { display: flex; gap: 14px; margin-bottom: 16px; position: relative; }
+.tl-item:last-child { margin-bottom: 0; }
+.tl-left { display: flex; flex-direction: column; align-items: center; width: 48px; flex-shrink: 0; }
+.tl-time { font-size: 12px; font-weight: 600; color: #888; white-space: nowrap; }
+.tl-dot { width: 12px; height: 12px; border-radius: 50%; margin: 4px 0; flex-shrink: 0; }
+.tl-line { width: 2px; background: #f0efe9; flex: 1; min-height: 20px; }
+.dot-meeting { background: #534AB7; }
+.dot-task { background: #1D9E75; }
+.dot-reminder { background: #BA7517; }
+.dot-note { background: #378ADD; }
+.tl-card { flex: 1; background: #fafafa; border-radius: 12px; padding: 11px 13px; border-left: 3px solid #e0e0e0; }
+.tl-card.type-meeting { border-left-color: #534AB7; }
+.tl-card.type-task { border-left-color: #1D9E75; }
+.tl-card.type-reminder { border-left-color: #BA7517; }
+.tl-card.type-note { border-left-color: #378ADD; }
+.tl-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.tl-text { font-size: 14px; color: #1a1a1a; line-height: 1.4; flex: 1; }
+.tl-text.done { text-decoration: line-through; color: #aaa; }
+.tl-badge { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
 .badge-meeting { background: #EEEDFE; color: #3C3489; }
 .badge-task { background: #E1F5EE; color: #085041; }
 .badge-reminder { background: #FAEEDA; color: #633806; }
 .badge-note { background: #E6F1FB; color: #0C447C; }
-.entry-btns { display: flex; gap: 2px; }
-.ebtn { background: none; border: none; cursor: pointer; color: #ccc; padding: 4px 6px; font-size: 16px; border-radius: 8px; }
-.ebtn:hover { background: #f5f5f7; }
-.ebtn.check:hover { color: #1D9E75; }
-.ebtn.del:hover { color: #E24B4A; }
-.empty { text-align: center; padding: 3rem 1rem; color: #ccc; font-size: 14px; }
-.empty-icon { font-size: 40px; margin-bottom: 12px; display: block; }
+.tl-actions { display: flex; gap: 4px; margin-top: 8px; }
+.tl-btn { background: none; border: none; cursor: pointer; color: #ccc; font-size: 15px; padding: 2px 6px; border-radius: 6px; }
+.tl-btn:hover { background: #f0efe9; }
+
+/* Filter tabs */
+.filter-tabs { display: flex; gap: 6px; padding: 14px 18px 0; overflow-x: auto; }
+.filter-tabs::-webkit-scrollbar { display: none; }
+.ftab { padding: 5px 12px; border-radius: 16px; border: 1.5px solid #e8e8e8; background: white; color: #888; font-size: 12px; cursor: pointer; white-space: nowrap; }
+.ftab.active { background: #1a1a1a; color: white; border-color: #1a1a1a; font-weight: 600; }
+
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 24px; font-size: 14px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; white-space: nowrap; }
 .toast.show { opacity: 1; }
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="top">
+  <div class="header">
     <h1>📔 My Diary</h1>
-    <div style="font-size:13px;color:#888;" id="entryCount">0 entries</div>
+    <div class="sub" id="totalCount">0 entries total</div>
   </div>
-  <div class="today" id="todayDate"></div>
 
+  <!-- Date navigation -->
+  <div class="nav">
+    <button class="nav-btn" onclick="changeDay(-1)" aria-label="Previous day">‹</button>
+    <div class="nav-center">
+      <div class="nav-day" id="navDay"></div>
+      <div class="nav-date" id="navDate"></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="today-btn" onclick="goToday()">Today</button>
+      <button class="nav-btn" onclick="changeDay(1)" aria-label="Next day">›</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
   <div class="stats">
     <div class="stat"><div class="stat-num" id="sMeeting">0</div><div class="stat-label">Meetings</div></div>
     <div class="stat"><div class="stat-num" id="sTask">0</div><div class="stat-label">Tasks</div></div>
@@ -83,6 +131,7 @@ textarea::placeholder { color: #bbb; }
     <div class="stat"><div class="stat-num" id="sNote">0</div><div class="stat-label">Notes</div></div>
   </div>
 
+  <!-- Input -->
   <div class="input-card">
     <div class="type-row">
       <span class="type-chip sel-meeting" id="chip-meeting" onclick="selectType('meeting')">📅 Meeting</span>
@@ -91,38 +140,53 @@ textarea::placeholder { color: #bbb; }
       <span class="type-chip" id="chip-note" onclick="selectType('note')">📝 Note</span>
     </div>
     <div class="input-row">
-      <textarea id="entryInput" rows="2" placeholder="Speak or type your meeting, task, reminder or note..."></textarea>
-      <button class="mic-btn" id="micBtn" onclick="toggleMic()" aria-label="Tap to speak">
-        <span class="mic-icon" id="micIcon">🎙️</span>
+      <textarea id="entryInput" rows="2" placeholder="Speak or type your entry for this day..."></textarea>
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()" aria-label="Tap to speak" id="micBtn">
+        <span id="micIcon">🎙️</span>
       </button>
-      <button class="add-btn" onclick="addEntry()" aria-label="Add entry">+</button>
+      <button class="add-btn" onclick="addEntry()" aria-label="Add">+</button>
     </div>
     <div class="listen-hint" id="listenHint">🔴 Listening... tap mic to stop</div>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" id="tab-all" onclick="filterTab('all')">All</div>
-    <div class="tab" id="tab-meeting" onclick="filterTab('meeting')">📅 Meetings</div>
-    <div class="tab" id="tab-task" onclick="filterTab('task')">✅ Tasks</div>
-    <div class="tab" id="tab-reminder" onclick="filterTab('reminder')">🔔 Reminders</div>
-    <div class="tab" id="tab-note" onclick="filterTab('note')">📝 Notes</div>
-  </div>
+  <!-- Daily page -->
+  <div class="day-page">
+    <div class="day-header">
+      <div class="day-header-top">
+        <div>
+          <div class="day-name" id="dhDay"></div>
+          <div class="day-num" id="dhNum"></div>
+          <div class="day-month" id="dhMonth"></div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:12px;color:#aaa;">Entries</div>
+          <div style="font-size:28px;font-weight:700;" id="dhCount">0</div>
+        </div>
+      </div>
+      <div class="day-badges" id="dhBadges"></div>
+    </div>
 
-  <div class="section-bar">
-    <div class="section-label" id="sectionLabel">All entries</div>
-    <button class="clear-btn" onclick="clearFiltered()">🗑 Clear</button>
-  </div>
+    <div class="filter-tabs">
+      <div class="ftab active" id="ftab-all" onclick="filterType('all')">All</div>
+      <div class="ftab" id="ftab-meeting" onclick="filterType('meeting')">📅 Meetings</div>
+      <div class="ftab" id="ftab-task" onclick="filterType('task')">✅ Tasks</div>
+      <div class="ftab" id="ftab-reminder" onclick="filterType('reminder')">🔔 Reminders</div>
+      <div class="ftab" id="ftab-note" onclick="filterType('note')">📝 Notes</div>
+    </div>
 
-  <div class="entries" id="entriesList"></div>
+    <div class="timeline" id="timeline"></div>
+  </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-let entries = JSON.parse(localStorage.getItem('diary_entries') || '[]');
+let entries = JSON.parse(localStorage.getItem('diary_v2') || '[]');
 let selectedType = 'meeting', currentFilter = 'all', recognition = null, listening = false;
+let viewDate = new Date();
+viewDate.setHours(0,0,0,0);
 
-const d = new Date();
-document.getElementById('todayDate').textContent = d.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+function dateKey(d) { return d.toISOString().split('T')[0]; }
 
 const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
 if (SpeechRec) {
@@ -138,11 +202,10 @@ if (SpeechRec) {
   recognition.onerror = () => { listening = false; setMicState(false); };
 } else {
   document.getElementById('micBtn').style.background = '#ccc';
-  document.getElementById('micIcon').textContent = '✕';
 }
 
 function toggleMic() {
-  if (!recognition) { showToast('Voice not supported — type instead'); return; }
+  if (!recognition) { showToast('Voice not supported — please type'); return; }
   if (listening) { recognition.stop(); return; }
   document.getElementById('entryInput').value = '';
   recognition.start(); listening = true; setMicState(true);
@@ -156,9 +219,9 @@ function setMicState(on) {
 
 function selectType(t) {
   selectedType = t;
+  const labels = { meeting: '📅 Meeting', task: '✅ Task', reminder: '🔔 Reminder', note: '📝 Note' };
   ['meeting','task','reminder','note'].forEach(x => {
     const c = document.getElementById('chip-' + x);
-    const labels = { meeting: '📅 Meeting', task: '✅ Task', reminder: '🔔 Reminder', note: '📝 Note' };
     c.className = 'type-chip' + (x === t ? ' sel-' + x : '');
     c.textContent = labels[x];
   });
@@ -166,75 +229,117 @@ function selectType(t) {
 
 function addEntry() {
   const text = document.getElementById('entryInput').value.trim();
-  if (!text) { showToast('Please type or speak something first'); return; }
+  if (!text) { showToast('Please type or speak something'); return; }
+  const now = new Date();
   const entry = {
     id: Date.now(),
     type: selectedType,
     text,
-    time: new Date().toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }),
-    date: new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }),
+    dateKey: dateKey(viewDate),
+    time: now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }),
+    timestamp: now.getTime(),
     done: false
   };
   entries.unshift(entry);
-  save(); updateStats(); render();
+  save(); renderAll();
   document.getElementById('entryInput').value = '';
-  showToast('Added to diary ✓');
+  showToast('Added ✓');
 }
 
 function toggleDone(id) {
   const e = entries.find(x => x.id === id);
-  if (e) { e.done = !e.done; save(); render(); }
+  if (e) { e.done = !e.done; save(); renderTimeline(); }
 }
 
 function deleteEntry(id) {
   entries = entries.filter(x => x.id !== id);
-  save(); updateStats(); render();
+  save(); renderAll();
 }
 
-function clearFiltered() {
-  if (!confirm('Clear ' + (currentFilter === 'all' ? 'all entries' : currentFilter + 's') + '?')) return;
-  entries = currentFilter === 'all' ? [] : entries.filter(x => x.type !== currentFilter);
-  save(); updateStats(); render();
+function changeDay(n) {
+  viewDate.setDate(viewDate.getDate() + n);
+  currentFilter = 'all';
+  ['all','meeting','task','reminder','note'].forEach(x => document.getElementById('ftab-' + x).classList.toggle('active', x === 'all'));
+  renderAll();
 }
 
-function filterTab(f) {
+function goToday() {
+  viewDate = new Date(); viewDate.setHours(0,0,0,0);
+  renderAll();
+}
+
+function filterType(f) {
   currentFilter = f;
-  ['all','meeting','task','reminder','note'].forEach(x => document.getElementById('tab-' + x).classList.toggle('active', x === f));
-  const labels = { all: 'All entries', meeting: 'Meetings', task: 'Tasks', reminder: 'Reminders', note: 'Notes' };
-  document.getElementById('sectionLabel').textContent = labels[f];
-  render();
+  ['all','meeting','task','reminder','note'].forEach(x => document.getElementById('ftab-' + x).classList.toggle('active', x === f));
+  renderTimeline();
 }
 
-function save() { localStorage.setItem('diary_entries', JSON.stringify(entries)); }
+function save() { localStorage.setItem('diary_v2', JSON.stringify(entries)); }
 
-function updateStats() {
+function getDayEntries() {
+  return entries.filter(e => e.dateKey === dateKey(viewDate));
+}
+
+function renderAll() {
+  const dk = dateKey(viewDate);
+  const isToday = dk === dateKey(new Date());
+
+  // Nav
+  document.getElementById('navDay').textContent = viewDate.toLocaleDateString('en-AU', { weekday: 'long' }) + (isToday ? ' — Today' : '');
+  document.getElementById('navDate').textContent = viewDate.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Day header
+  document.getElementById('dhDay').textContent = viewDate.toLocaleDateString('en-AU', { weekday: 'long' });
+  document.getElementById('dhNum').textContent = viewDate.getDate();
+  document.getElementById('dhMonth').textContent = viewDate.toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
+
+  // Stats (all time)
   ['meeting','task','reminder','note'].forEach(t => {
     document.getElementById('s' + t.charAt(0).toUpperCase() + t.slice(1)).textContent = entries.filter(e => e.type === t).length;
   });
-  document.getElementById('entryCount').textContent = entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies');
+  document.getElementById('totalCount').textContent = entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies') + ' total';
+
+  // Day badges
+  const dayE = getDayEntries();
+  document.getElementById('dhCount').textContent = dayE.length;
+  const badgeTypes = ['meeting','task','reminder','note'];
+  const badgeLabels = { meeting:'Meetings', task:'Tasks', reminder:'Reminders', note:'Notes' };
+  document.getElementById('dhBadges').innerHTML = badgeTypes
+    .filter(t => dayE.filter(e => e.type === t).length > 0)
+    .map(t => `<span class="day-badge db-${t}">${dayE.filter(e=>e.type===t).length} ${badgeLabels[t]}</span>`)
+    .join('');
+
+  renderTimeline();
 }
 
-function render() {
-  const list = document.getElementById('entriesList');
-  const filtered = currentFilter === 'all' ? entries : entries.filter(e => e.type === currentFilter);
-  if (!filtered.length) {
-    const msgs = { all: 'No entries yet.\nSpeak or type to get started!', meeting: 'No meetings yet.', task: 'No tasks yet.', reminder: 'No reminders yet.', note: 'No notes yet.' };
-    const icons = { all: '📔', meeting: '📅', task: '✅', reminder: '🔔', note: '📝' };
-    list.innerHTML = '<div class="empty"><span class="empty-icon">' + icons[currentFilter] + '</span>' + msgs[currentFilter].replace('\n','<br>') + '</div>';
+function renderTimeline() {
+  const tl = document.getElementById('timeline');
+  let dayE = getDayEntries();
+  if (currentFilter !== 'all') dayE = dayE.filter(e => e.type === currentFilter);
+  dayE.sort((a,b) => a.timestamp - b.timestamp);
+
+  if (!dayE.length) {
+    const isToday = dateKey(viewDate) === dateKey(new Date());
+    tl.innerHTML = `<div class="timeline-empty"><span class="big">${currentFilter === 'all' ? '📔' : {meeting:'📅',task:'✅',reminder:'🔔',note:'📝'}[currentFilter]}</span>${isToday ? 'Nothing added yet today.<br>Speak or type above!' : 'No entries for this day.'}</div>`;
     return;
   }
-  list.innerHTML = filtered.map(e => `
-    <div class="entry type-${e.type}">
-      <div class="entry-body">
-        <div class="entry-text${e.done ? ' done' : ''}">${e.text}</div>
-        <div class="entry-meta">
-          <span class="badge badge-${e.type}">${e.type}</span>
-          <span>${e.date} · ${e.time}</span>
-        </div>
+
+  tl.innerHTML = dayE.map((e, i) => `
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">${e.time}</div>
+        <div class="tl-dot dot-${e.type}"></div>
+        ${i < dayE.length - 1 ? '<div class="tl-line"></div>' : ''}
       </div>
-      <div class="entry-btns">
-        <button class="ebtn check" onclick="toggleDone(${e.id})" aria-label="Mark done">${e.done ? '↩️' : '✓'}</button>
-        <button class="ebtn del" onclick="deleteEntry(${e.id})" aria-label="Delete">🗑</button>
+      <div class="tl-card type-${e.type}">
+        <div class="tl-card-top">
+          <div class="tl-text${e.done ? ' done' : ''}">${e.text}</div>
+          <span class="tl-badge badge-${e.type}">${e.type}</span>
+        </div>
+        <div class="tl-actions">
+          <button class="tl-btn" onclick="toggleDone(${e.id})" aria-label="Toggle done">${e.done ? '↩️ Undo' : '✓ Done'}</button>
+          <button class="tl-btn" onclick="deleteEntry(${e.id})" aria-label="Delete">🗑 Delete</button>
+        </div>
       </div>
     </div>
   `).join('');
@@ -246,7 +351,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-updateStats(); render();
+renderAll();
 </script>
 </body>
 </html>
