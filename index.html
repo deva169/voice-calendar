@@ -332,12 +332,19 @@ function parseTime(text) {
   return null;
 }
 
-// ── Load entries and ALWAYS re-derive slotH/slotM from rawText ──
-// This fixes recurring entries saved before slotH was persisted.
+// Preserve saved planner slots; only repair legacy entries that never stored one.
 let entries = JSON.parse(localStorage.getItem('diary_v3') || localStorage.getItem('diary_v2') || localStorage.getItem('diary_entries') || '[]');
 entries = entries.map(e => {
   if (e.isPeriod) return {...e, slotH: null, slotM: null};
-  // Always re-derive from rawText so old entries without slotH get fixed
+
+  const savedH = Number(e.slotH);
+  const savedM = Number(e.slotM);
+  const hasSavedSlot =
+    e.slotH !== null && e.slotH !== undefined &&
+    Number.isInteger(savedH) && savedH >= 0 && savedH <= 23 &&
+    Number.isInteger(savedM) && savedM >= 0 && savedM <= 59;
+  if (hasSavedSlot) return {...e, slotH: savedH, slotM: savedM};
+
   const t = e.rawText ? parseTime(e.rawText) : null;
   return {
     ...e,
