@@ -465,8 +465,8 @@ function addEntry() {
   };
 
   if (periodStart && periodEnd) {
-    // Multi-day / period — add one entry spanning the period
-    const e = {...baseEntry, id: Date.now(), dateKey: periodStart, periodEnd: periodEnd};
+    // Multi-day / period — ONE entry stored, shown across date range
+    const e = {...baseEntry, id: Date.now(), dateKey: periodStart, periodEnd: periodEnd, slotH: null, slotM: null};
     entriesToAdd.push(e);
   } else if (recurVal) {
     // Recurring — generate next 90 days of occurrences
@@ -514,9 +514,12 @@ function confirmDone(id) {
 function confirmDelete(id) {
   const e = entries.find(x=>x.id===id);
   if (!e) return;
-  const isRecur = e.recur;
-  if (isRecur) {
-    showConfirm('Delete just this entry or all repeats?', 'This only', () => {
+  if (e.isPeriod) {
+    showConfirm('Delete "' + e.text + '" period event?', '🗑 Delete', () => {
+      entries = entries.filter(x=>x.id!==id); save(); renderAll();
+    });
+  } else if (e.recur) {
+    showConfirm('Delete recurring entry?', 'This day only', () => {
       entries = entries.filter(x=>x.id!==id); save(); renderAll();
     }, 'All repeats', () => {
       entries = entries.filter(x=>!(x.rawText===e.rawText && x.recur===e.recur)); save(); renderAll();
@@ -627,17 +630,17 @@ function renderTimeline() {
     return;
   }
 
-  // Include period entries that span this day
+  // Include period entries that span this day (shown as banner, not in timeline)
   const viewDK = dateKey(viewDate);
-  const allDayPeriod = entries.filter(e => {
+  const periodBanners = entries.filter(e => {
     if (!e.isPeriod || !e.periodEnd) return false;
     if (currentFilter !== 'all' && e.type !== currentFilter) return false;
     return e.dateKey <= viewDK && e.periodEnd >= viewDK;
   });
 
-  // Separate timed vs untimed
-  const timed = dayE.filter(e=>e.slotH!==null);
-  const untimed = [...allDayPeriod.filter(e=>!dayE.find(d=>d.id===e.id)), ...dayE.filter(e=>e.slotH===null)];
+  // Separate timed vs untimed (exclude period entries from main list)
+  const timed = dayE.filter(e=>e.slotH!==null && !e.isPeriod);
+  const untimed = dayE.filter(e=>e.slotH===null && !e.isPeriod);
 
   // Build slot map
   const slotMap = {};
@@ -656,6 +659,27 @@ function renderTimeline() {
   const nowSlot = isToday ? slotKey(now.getHours(), now.getMinutes()<30?0:30) : -1;
 
   let html = '';
+
+  // Period banners at top
+  if (periodBanners.length) {
+    html += '<div style="padding:10px 16px 0;">';
+    periodBanners.forEach(pb => {
+      const startFmt = new Date(pb.dateKey+'T12:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+      const endFmt = new Date(pb.periodEnd+'T12:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+      html += `<div style="background:#EEEDFE;border-left:3px solid #534AB7;border-radius:10px;padding:8px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#3C3489;">📆 ${pb.text}</div>
+          <div style="font-size:11px;color:#7F77DD;margin-top:2px;">${startFmt} – ${endFmt}</div>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <button class="ep-btn" onclick="editEntry(${pb.id})" title="Edit">✏️</button>
+          <button class="ep-btn" onclick="confirmDelete(${pb.id})" title="Delete">🗑</button>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
   for (let h=startH; h<endH; h++) {
     for (let m=0; m<60; m+=30) {
       const sk = slotKey(h,m);
