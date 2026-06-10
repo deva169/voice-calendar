@@ -309,7 +309,16 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
 
 <script>
 let entries = JSON.parse(localStorage.getItem('diary_v3') || localStorage.getItem('diary_v2') || localStorage.getItem('diary_entries') || '[]');
-entries = entries.map(e => ({...e, slotH: e.slotH !== undefined ? e.slotH : null, slotM: e.slotM !== undefined ? e.slotM : null}));
+entries = entries.map(e => {
+  // Re-parse slotH/slotM from rawText if missing (fixes old entries)
+  let slotH = e.slotH !== undefined ? e.slotH : null;
+  let slotM = e.slotM !== undefined ? e.slotM : null;
+  if ((slotH === null || slotH === undefined) && e.rawText && !e.isPeriod) {
+    const t = parseTime(e.rawText);
+    if (t) { slotH = t.h; slotM = t.m; }
+  }
+  return {...e, slotH, slotM};
+});
 
 let selectedType = 'meeting', currentFilter = 'all', currentView = 'day';
 let viewDate = new Date(); viewDate.setHours(0,0,0,0);
