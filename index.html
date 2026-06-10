@@ -173,12 +173,12 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
 <div class="toast" id="toast"></div>
 
 <script>
-let entries = JSON.parse(localStorage.getItem('diary_v3') || '[]');
+let _raw = JSON.parse(localStorage.getItem('diary_v3') || localStorage.getItem('diary_v2') || localStorage.getItem('diary_entries') || '[]'); let entries = _raw.map(e => ({...e, slotH: e.slotH !== undefined ? e.slotH : null, slotM: e.slotM !== undefined ? e.slotM : null}));
 let selectedType = 'meeting', currentFilter = 'all', recognition = null, listening = false;
 let viewDate = new Date(); viewDate.setHours(0,0,0,0);
 let detectedDate = null, detectedTime = null;
 
-function dateKey(d) { const dd=new Date(d); dd.setHours(0,0,0,0); return dd.toISOString().split('T')[0]; }
+function dateKey(d) { const dd=new Date(d); return dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0'); }
 
 // Clean text — strip type keywords, date/time words, keep the actual activity
 function cleanText(raw) {
@@ -373,8 +373,9 @@ function renderAll() {
   document.getElementById('dhDay').textContent = viewDate.toLocaleDateString('en-AU',{weekday:'long'});
   document.getElementById('dhNum').textContent = viewDate.getDate();
   document.getElementById('dhMonth').textContent = viewDate.toLocaleDateString('en-AU',{month:'long',year:'numeric'});
+  const todayE=entries.filter(e=>e.dateKey===dateKey(viewDate));
   ['meeting','task','reminder','note'].forEach(t=>{
-    document.getElementById('s'+t.charAt(0).toUpperCase()+t.slice(1)).textContent=entries.filter(e=>e.type===t).length;
+    document.getElementById('s'+t.charAt(0).toUpperCase()+t.slice(1)).textContent=todayE.filter(e=>e.type===t).length;
   });
   document.getElementById('totalCount').textContent=entries.length+' entr'+(entries.length===1?'y':'ies')+' total';
   const dayE=getDayEntries();
@@ -394,7 +395,9 @@ function renderTimeline() {
   if (!dayE.length) {
     const isToday=dateKey(viewDate)===dateKey(new Date());
     const icons={all:'📔',meeting:'📅',task:'✅',reminder:'🔔',note:'📝'};
-    tl.innerHTML=`<div class="timeline-empty"><span class="big">${icons[currentFilter]}</span>${isToday?'Nothing here yet.<br>Speak or type above!':'No entries for this day.'}</div>`;
+    const otherDays = entries.filter(e=>e.type===(currentFilter==='all'?e.type:currentFilter)).length;
+    const hint = otherDays > 0 ? `<br><span style="font-size:12px;color:#aaa;">You have ${otherDays} entr${otherDays===1?'y':'ies'} on other days — use ‹ › to browse</span>` : '';
+    tl.innerHTML=`<div class="timeline-empty"><span class="big">${icons[currentFilter]}</span>${isToday?'Nothing here yet.<br>Speak or type above!':'No entries for this day.'}${hint}</div>`;
     return;
   }
 
