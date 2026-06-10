@@ -185,24 +185,27 @@ function cleanText(raw) {
   let t = raw;
   // Remove type keywords at start
   t = t.replace(/^(task|todo|to do|to-do|meeting|reminder|remind me|note|notes)\s*[-:–]?\s*/i, '');
-  // Remove date phrases
-  t = t.replace(/\b(today|tomorrow|yesterday|next week|this week|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/gi, '');
-  // Remove time phrases
+  // Remove time expressions — "at 10am", "10am", "10 am", "10:30 am"
   t = t.replace(/\b(at\s+)?\d{1,2}(:\d{2})?\s*(am|pm)\b/gi, '');
-  t = t.replace(/\b(morning|afternoon|evening|night|midnight|noon)\b/gi, '');
-  t = t.replace(/\b(early|late|in the)\b/gi, '');
-  // Remove day ordinals
-  t = t.replace(/\b\d{1,2}(st|nd|rd|th)\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*/gi, '');
-  // Capitalise first letter, trim
+  // Remove time-of-day words
+  t = t.replace(/\b(early\s+)?(morning|afternoon|evening|night|midnight|noon|midday|lunchtime)\b/gi, '');
+  // Remove date phrases
+  t = t.replace(/\b(today|tomorrow|yesterday|next\s+week|this\s+week)\b/gi, '');
+  t = t.replace(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/gi, '');
+  t = t.replace(/\b\d{1,2}(st|nd|rd|th)(\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*)?\b/gi, '');
+  // Remove leftover filler
+  t = t.replace(/\b(early|late|in the|on|at)\b/gi, '');
   t = t.replace(/\s+/g, ' ').trim();
-  t = t.replace(/^[-–,\s]+/, '').trim();
+  t = t.replace(/^[-–,.\s]+/, '').trim();
   if (t.length > 0) t = t.charAt(0).toUpperCase() + t.slice(1);
   return t || raw.trim();
 }
 
-// Round minutes to nearest 30
+// Snap to nearest 30-min slot — exact on the hour/half hour
 function roundToSlot(h, m) {
-  return m < 15 ? { h, m: 0 } : m < 45 ? { h, m: 30 } : { h: h+1, m: 0 };
+  if (m < 15) return { h, m: 0 };
+  if (m < 45) return { h, m: 30 };
+  return { h: h + 1, m: 0 };
 }
 
 // Parse time from text, return {h, m} or null
