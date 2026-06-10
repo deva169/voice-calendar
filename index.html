@@ -180,55 +180,65 @@ let detectedDate = null, detectedTime = null;
 
 function dateKey(d) { const dd=new Date(d); return dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0'); }
 
-// Clean text — strip type keywords, date/time words, keep the actual activity
-function cleanText(raw) {
-  let t = raw;
-  // Remove type keywords at start
-  t = t.replace(/^(task|todo|to do|to-do|meeting|reminder|remind me|note|notes)\s*[-:–]?\s*/i, '');
-  // Remove time expressions — "at 10am", "10am", "10 am", "10:30 am"
-  t = t.replace(/\b(at\s+)?\d{1,2}(:\d{2})?\s*(am|pm)\b/gi, '');
-  // Remove time-of-day words
-  t = t.replace(/\b(early\s+)?(morning|afternoon|evening|night|midnight|noon|midday|lunchtime)\b/gi, '');
-  // Remove date phrases
-  t = t.replace(/\b(today|tomorrow|yesterday|next\s+week|this\s+week)\b/gi, '');
-  t = t.replace(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/gi, '');
-  t = t.replace(/\b\d{1,2}(st|nd|rd|th)(\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*)?\b/gi, '');
-  // Remove leftover filler
-  t = t.replace(/\b(early|late|in the|on|at)\b/gi, '');
-  t = t.replace(/\s+/g, ' ').trim();
-  t = t.replace(/^[-–,.\s]+/, '').trim();
-  if (t.length > 0) t = t.charAt(0).toUpperCase() + t.slice(1);
-  return t || raw.trim();
+// Parse time from text FIRST, return {h, m} or null
+function parseTime(text) {
+  const t = text.toLowerCase();
+  // Match "10am", "10 am", "10:30am", "10:30 am", "at 10am" etc
+  const m1 = t.match(/(?:^|\s|at\s+)(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i);
+  if (m1) {
+    let h = parseInt(m1[1]), m = parseInt(m1[2] || '0');
+    const ap = m1[3].toLowerCase();
+    if (ap === 'pm' && h !== 12) h += 12;
+    if (ap === 'am' && h === 12) h = 0;
+    // snap to slot
+    if (m < 15) m = 0;
+    else if (m < 45) m = 30;
+    else { h += 1; m = 0; }
+    return { h, m };
+  }
+  if (/\b(early morning|dawn)\b/.test(t)) return { h: 7, m: 0 };
+  if (/\bmid.?morning\b/.test(t)) return { h: 10, m: 30 };
+  if (/\bmorning\b/.test(t)) return { h: 9, m: 0 };
+  if (/\b(noon|midday)\b/.test(t)) return { h: 12, m: 0 };
+  if (/\blunch\b/.test(t)) return { h: 12, m: 30 };
+  if (/\bafternoon\b/.test(t)) return { h: 14, m: 0 };
+  if (/\bevening\b/.test(t)) return { h: 18, m: 0 };
+  if (/\bnight\b/.test(t)) return { h: 20, m: 0 };
+  return null;
 }
 
-// Snap to nearest 30-min slot — exact on the hour/half hour
+// Snap to nearest 30-min slot
 function roundToSlot(h, m) {
   if (m < 15) return { h, m: 0 };
   if (m < 45) return { h, m: 30 };
   return { h: h + 1, m: 0 };
 }
 
-// Parse time from text, return {h, m} or null
-function parseTime(text) {
-  const t = text.toLowerCase();
-  // "10am", "10:30am", "10 am"
-  const explicit = t.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/);
-  if (explicit) {
-    let h = parseInt(explicit[1]), m = parseInt(explicit[2] || '0');
-    if (explicit[3] === 'pm' && h !== 12) h += 12;
-    if (explicit[3] === 'am' && h === 12) h = 0;
-    const s = roundToSlot(h, m);
-    return s;
-  }
-  if (/\b(early morning|dawn)\b/.test(t)) return { h: 7, m: 0 };
-  if (/\bmorning\b/.test(t)) return { h: 9, m: 0 };
-  if (/\bmid.?morning\b/.test(t)) return { h: 10, m: 30 };
-  if (/\bnoon|midday\b/.test(t)) return { h: 12, m: 0 };
-  if (/\blunch\b/.test(t)) return { h: 12, m: 30 };
-  if (/\bafternoon\b/.test(t)) return { h: 14, m: 0 };
-  if (/\bevening\b/.test(t)) return { h: 18, m: 0 };
-  if (/\bnight\b/.test(t)) return { h: 20, m: 0 };
-  return null;
+// Clean text — strip ALL metadata, keep only the activity description
+function cleanText(raw) {
+  let t = raw;
+  // 1. Remove type keyword at start
+  t = t.replace(/^\s*(task|todo|to[-\s]do|meeting|reminder|remind\s+me|note|notes)\s*[-:–]?\s*/i, '');
+  // 2. Remove time expressions (do this BEFORE removing other words)
+  t = t.replace(/\bat\s+\d{1,2}(:\d{2})?\s*(am|pm)\b/gi, '');  // "at 10am"
+  t = t.replace(/\b\d{1,2}(:\d{2})?\s*(am|pm)\b/gi, '');        // "10am", "10:30 am"
+  t = t.replace(/\b\d{1,2}\s*o['']?clock\b/gi, '');              // "10 o'clock"
+  // 3. Remove time-of-day words
+  t = t.replace(/\b(early\s+morning|early\s+afternoon|mid\s+morning|late\s+afternoon)\b/gi, '');
+  t = t.replace(/\b(morning|afternoon|evening|night|midnight|noon|midday|lunchtime)\b/gi, '');
+  // 4. Remove date phrases
+  t = t.replace(/\b(today|tomorrow|yesterday|next\s+week|this\s+week|next\s+month)\b/gi, '');
+  t = t.replace(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/gi, '');
+  t = t.replace(/\b\d{1,2}(st|nd|rd|th)(\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*)?\b/gi, '');
+  t = t.replace(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\b/gi, '');
+  // 5. Remove filler connectors
+  t = t.replace(/\b(early|late|in\s+the|on|at|by|for|this|next|from)\b/gi, '');
+  // 6. Clean up
+  t = t.replace(/\s+/g, ' ').trim();
+  t = t.replace(/^[-–,.:;\s]+/, '').trim();
+  t = t.replace(/[-–,.:;\s]+$/, '').trim();
+  if (t.length > 0) t = t.charAt(0).toUpperCase() + t.slice(1);
+  return t || raw.trim();
 }
 
 function slotKey(h, m) { return h * 60 + m; }
