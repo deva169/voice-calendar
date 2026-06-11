@@ -321,6 +321,11 @@ function parseTime(text) {
     if(m<15) m=0; else if(m<45) m=30; else{h+=1;m=0;}
     return {h,m};
   }
+  const weekdayHour=t.match(/\b(?:sun(?:day)?|mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?)\s+(?:at\s+)?(\d{1,2})(?::(\d{2}))?\b/);
+  if(weekdayHour){
+    const h=parseInt(weekdayHour[1]),m=parseInt(weekdayHour[2]||'0');
+    if(h>=1&&h<=12&&m<60) return {h,m};
+  }
   if(/\b(early morning|dawn)\b/.test(t)) return {h:7,m:0};
   if(/\bmid.?morning\b/.test(t)) return {h:10,m:30};
   if(/\bmorning\b/.test(t)) return {h:9,m:0};
@@ -333,9 +338,12 @@ function parseTime(text) {
 }
 
 function mentionedWeekday(text) {
-  const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
   const lower=(text||'').toLowerCase();
-  return days.findIndex(day=>new RegExp('\\b'+day+'\\b').test(lower));
+  const days=[
+    /\bsun(?:day)?\b/,/\bmon(?:day)?\b/,/\btue(?:sday)?\b/,/\bwed(?:nesday)?\b/,
+    /\bthu(?:rsday)?\b/,/\bfri(?:day)?\b/,/\bsat(?:urday)?\b/
+  ];
+  return days.findIndex(day=>day.test(lower));
 }
 
 function firstWeekdayInPeriod(startKey, weekday) {
