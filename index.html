@@ -332,24 +332,37 @@ function parseTime(text) {
   return null;
 }
 
+function mentionedWeekday(text) {
+  const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const lower=(text||'').toLowerCase();
+  return days.findIndex(day=>new RegExp('\\b'+day+'\\b').test(lower));
+}
+
+function firstWeekdayInPeriod(startKey, weekday) {
+  const d=new Date(startKey+'T12:00:00');
+  d.setDate(d.getDate()+(weekday-d.getDay()+7)%7);
+  return dateKey(d);
+}
+
 // Preserve saved planner slots; only repair legacy entries that never stored one.
 let entries = JSON.parse(localStorage.getItem('diary_v3') || localStorage.getItem('diary_v2') || localStorage.getItem('diary_entries') || '[]');
 entries = entries.map(e => {
-  if (e.isPeriod) return {...e, slotH: null, slotM: null};
-
   const savedH = Number(e.slotH);
   const savedM = Number(e.slotM);
   const hasSavedSlot =
     e.slotH !== null && e.slotH !== undefined &&
     Number.isInteger(savedH) && savedH >= 0 && savedH <= 23 &&
     Number.isInteger(savedM) && savedM >= 0 && savedM <= 59;
-  if (hasSavedSlot) return {...e, slotH: savedH, slotM: savedM};
+  const t = hasSavedSlot ? {h:savedH,m:savedM} : e.rawText ? parseTime(e.rawText) : null;
+  if (!e.isPeriod || !t) return {...e, slotH:t?t.h:null, slotM:t?t.m:null};
 
-  const t = e.rawText ? parseTime(e.rawText) : null;
+  const weekday=mentionedWeekday(e.rawText);
   return {
     ...e,
-    slotH: t ? t.h : null,
-    slotM: t ? t.m : null
+    slotH:t.h,
+    slotM:t.m,
+    occurrenceDateKey:e.occurrenceDateKey||(weekday>=0?firstWeekdayInPeriod(e.dateKey,weekday):e.dateKey),
+    recur:e.recur||(weekday>=0?'weekly':null)
   };
 });
 
@@ -482,7 +495,16 @@ function addEntry(){
   const toAdd=[];
 
   if(periodStart&&periodEnd){
-    toAdd.push({...base,id:Date.now(),dateKey:periodStart,periodEnd,isPeriod:true,slotH:null,slotM:null});
+    if(timeSlot){
+      const weekday=mentionedWeekday(raw);
+      let occurrenceDateKey=dateKey(targetDate);
+      if(occurrenceDateKey<periodStart||occurrenceDateKey>periodEnd){
+        occurrenceDateKey=weekday>=0?firstWeekdayInPeriod(periodStart,weekday):periodStart;
+      }
+      toAdd.push({...base,id:Date.now(),dateKey:periodStart,periodEnd,isPeriod:true,occurrenceDateKey,recur:recurVal||(weekday>=0?'weekly':null)});
+    } else {
+      toAdd.push({...base,id:Date.now(),dateKey:periodStart,periodEnd,isPeriod:true,slotH:null,slotM:null});
+    }
   } else if(recurVal){
     const start=new Date(targetDate);
     const until=new Date(start);until.setDate(until.getDate()+90);
@@ -515,7 +537,7 @@ function addEntry(){
   document.getElementById('entryInput').value='';hideHint();
   const dl=dateKey(targetDate)===dateKey(new Date())?'today':targetDate.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
   const tl=timeSlot?' at '+formatTime(timeSlot.h,timeSlot.m):'';
-  showToast(periodStart?'Period event added 📆':recurVal?`Added ${toAdd.length} repeating entries 🔁`:'Added to '+dl+tl+' ✓');
+  showToast(periodStart?(timeSlot?'Timed period entry added at '+formatTime(timeSlot.h,timeSlot.m)+' ✓':'Period event added 📆'):recurVal?`Added ${toAdd.length} repeating entries 🔁`:'Added to '+dl+tl+' ✓');
 }
 
 function save(){
@@ -623,8 +645,22 @@ function navForward(){
 function goToday(){viewDate=new Date();viewDate.setHours(0,0,0,0);renderAll();}
 function filterType(f){currentFilter=f;['all','meeting','task','reminder','note'].forEach(x=>document.getElementById('ftab-'+x).classList.toggle('active',x===f));renderTimeline();}
 
-function getDayEntries(dk){return entries.filter(e=>!e.isPeriod&&e.dateKey===dk);}
-function getPeriodBanners(dk){return entries.filter(e=>e.isPeriod&&e.periodEnd&&e.dateKey<=dk&&e.periodEnd>=dk);}
+function periodOccursOn(e,dk){
+  if(!e.isPeriod||e.slotH===null||!e.periodEnd||dk<e.dateKey||dk>e.periodEnd) return false;
+  const startKey=e.occurrenceDateKey||e.dateKey;
+  if(dk<startKey) return false;
+  const start=new Date(startKey+'T12:00:00');
+  const day=new Date(dk+'T12:00:00');
+  const diffDays=Math.round((day-start)/86400000);
+  if(e.recur==='daily') return true;
+  if(e.recur==='weekdays') return day.getDay()!==0&&day.getDay()!==6;
+  if(e.recur==='weekly') return diffDays%7===0;
+  if(e.recur==='fortnightly') return diffDays%14===0;
+  if(e.recur==='monthly') return day.getDate()===start.getDate();
+  return dk===startKey;
+}
+function getDayEntries(dk){return entries.filter(e=>(!e.isPeriod&&e.dateKey===dk)||periodOccursOn(e,dk));}
+function getPeriodBanners(dk){return entries.filter(e=>e.isPeriod&&e.slotH===null&&e.periodEnd&&e.dateKey<=dk&&e.periodEnd>=dk);}
 
 function renderAll(){
   const isToday=dateKey(viewDate)===dateKey(new Date());
