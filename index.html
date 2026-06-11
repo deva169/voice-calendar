@@ -16,6 +16,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .view-switcher { display: flex; gap: 4px; background: white; border-radius: 12px; padding: 4px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
 .vsw { flex: 1; padding: 7px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #888; background: none; }
 .vsw.active { background: #1a1a1a; color: white; }
+.status-switcher { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: -4px 0 12px; }
+.status-btn { border: none; border-radius: 10px; padding: 8px 10px; background: white; color: #777; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.status-btn.active { background: #1a1a1a; color: white; }
+.status-btn.overdue-active { background: #A32D2D; color: white; }
+.status-count { display: inline-flex; min-width: 20px; height: 20px; padding: 0 6px; margin-left: 5px; border-radius: 10px; align-items: center; justify-content: center; background: #f0efe9; color: #555; font-size: 11px; }
+.status-btn.active .status-count, .status-btn.overdue-active .status-count { background: rgba(255,255,255,0.22); color: white; }
 
 /* Nav */
 .nav { display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 14px; padding: 10px 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
@@ -120,6 +126,24 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
 .timeline-empty { text-align: center; padding: 2rem 1rem; color: #ccc; font-size: 14px; }
 .timeline-empty .big { font-size: 34px; display: block; margin-bottom: 8px; }
 
+/* Overdue and completed lists */
+.list-page { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.list-header { padding: 16px; background: #1a1a1a; color: white; }
+.list-header.overdue { background: #A32D2D; }
+.list-title { font-size: 19px; font-weight: 700; }
+.list-subtitle { font-size: 11px; opacity: 0.72; margin-top: 3px; }
+.entry-list { padding: 12px; }
+.list-card { border-radius: 11px; padding: 11px 12px; margin-bottom: 8px; border-left: 4px solid #888; background: #fafafa; display: flex; gap: 8px; align-items: flex-start; }
+.list-card.overdue { background: #FCEBEB; border-left-color: #A32D2D; }
+.list-card.completed { background: #EAF3EE; border-left-color: #287A51; }
+.list-card-body { flex: 1; min-width: 0; }
+.list-card-title { font-size: 13px; font-weight: 700; color: #222; line-height: 1.35; }
+.list-card-meta { font-size: 11px; color: #777; margin-top: 4px; }
+.list-actions { display: flex; gap: 3px; flex-shrink: 0; }
+.list-action { border: none; border-radius: 7px; padding: 5px 7px; background: white; cursor: pointer; font-size: 13px; }
+.list-empty { text-align: center; color: #aaa; padding: 44px 16px; font-size: 14px; }
+.list-empty-icon { display: block; font-size: 34px; margin-bottom: 8px; }
+
 /* Weekly view */
 .week-grid { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .week-days { display: grid; grid-template-columns: 44px repeat(7, 1fr); border-bottom: 1px solid #f0f0f0; }
@@ -180,8 +204,12 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
     <button class="vsw" id="vsw-week" onclick="switchView('week')">📆 Week</button>
     <button class="vsw" id="vsw-month" onclick="switchView('month')">🗓 Month</button>
   </div>
+  <div class="status-switcher">
+    <button class="status-btn" id="vsw-overdue" onclick="switchView('overdue')">⚠ Overdue <span class="status-count" id="overdueCount">0</span></button>
+    <button class="status-btn" id="vsw-completed" onclick="switchView('completed')">✓ Completed <span class="status-count" id="completedCount">0</span></button>
+  </div>
 
-  <div class="nav">
+  <div class="nav" id="dateNav">
     <button class="nav-btn" onclick="navBack()">‹</button>
     <div class="nav-center">
       <div class="nav-day" id="navLabel"></div>
@@ -300,6 +328,20 @@ textarea::placeholder { color: #ccc; font-size: 13px; }
       <div class="month-cells" id="monthCells"></div>
     </div>
   </div>
+
+  <div id="overdueView" style="display:none;">
+    <div class="list-page">
+      <div class="list-header overdue"><div class="list-title">⚠ Overdue</div><div class="list-subtitle">Incomplete tasks, reminders and notes past their due date</div></div>
+      <div class="entry-list" id="overdueList"></div>
+    </div>
+  </div>
+
+  <div id="completedView" style="display:none;">
+    <div class="list-page">
+      <div class="list-header"><div class="list-title">✓ Completed diary</div><div class="list-subtitle">Completed tasks, reminders and notes kept for future reference</div></div>
+      <div class="entry-list" id="completedList"></div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -362,13 +404,14 @@ entries = entries.map(e => {
     Number.isInteger(savedH) && savedH >= 0 && savedH <= 23 &&
     Number.isInteger(savedM) && savedM >= 0 && savedM <= 59;
   const t = hasSavedSlot ? {h:savedH,m:savedM} : e.rawText ? parseTime(e.rawText) : null;
-  if (!e.isPeriod || !t) return {...e, slotH:t?t.h:null, slotM:t?t.m:null};
+  if (!e.isPeriod || !t) return {...e, slotH:t?t.h:null, slotM:t?t.m:null, completedAt:e.done?(e.completedAt||null):null};
 
   const weekday=mentionedWeekday(e.rawText);
   return {
     ...e,
     slotH:t.h,
     slotM:t.m,
+    completedAt:e.done?(e.completedAt||null):null,
     occurrenceDateKey:e.occurrenceDateKey||(weekday>=0?firstWeekdayInPeriod(e.dateKey,weekday):e.dateKey),
     recur:e.recur||(weekday>=0?'weekly':null)
   };
@@ -569,11 +612,34 @@ function editEntry(id){
 function confirmDone(id){
   const e=entries.find(x=>x.id===id);
   if(!e) return;
-  if(e.done){e.done=false;save();renderAll();return;}
+  if(e.done){e.done=false;e.completedAt=null;save();renderAll();return;}
   showModal('Mark as done?',[
-    {label:'✓ Done',cls:'primary',action:()=>{e.done=true;save();renderAll();}},
+    {label:'✓ Done',cls:'primary',action:()=>{e.done=true;e.completedAt=Date.now();save();renderAll();}},
     {label:'Cancel',cls:'cancel',action:()=>{}}
   ]);
+}
+
+function rescheduleEntry(id){
+  const e=entries.find(x=>x.id===id);
+  if(!e) return;
+  const current=entryDueKey(e)||dateKey(new Date());
+  showModal('Move to another date',[
+    {label:'Move entry',cls:'primary',action:()=>{
+      const newDate=document.getElementById('rescheduleDate').value;
+      if(!newDate){showToast('Choose a new date');return;}
+      e.dateKey=newDate;
+      e.done=false;
+      e.completedAt=null;
+      e.recur=null;
+      e.isPeriod=false;
+      delete e.periodEnd;
+      delete e.occurrenceDateKey;
+      save();
+      renderAll();
+      showToast('Moved to '+formatDateKey(newDate)+' ✓');
+    }},
+    {label:'Cancel',cls:'cancel',action:()=>{}}
+  ], `<label style="display:block;font-size:12px;color:#777;margin-bottom:6px;">New due date</label><input id="rescheduleDate" type="date" value="${current}" style="width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:10px 12px;font-size:15px;margin-bottom:12px;">`);
 }
 
 function confirmDelete(id){
@@ -631,10 +697,12 @@ function closeModal() {
 
 function switchView(v){
   currentView=v;
-  ['day','week','month'].forEach(x=>{
+  ['day','week','month','overdue','completed'].forEach(x=>{
     document.getElementById(x+'View').style.display=x===v?'block':'none';
     document.getElementById('vsw-'+x).classList.toggle('active',x===v);
   });
+  document.getElementById('vsw-overdue').classList.toggle('overdue-active',v==='overdue');
+  document.getElementById('dateNav').style.display=['day','week','month'].includes(v)?'flex':'none';
   renderAll();
 }
 
@@ -669,6 +737,41 @@ function periodOccursOn(e,dk){
 }
 function getDayEntries(dk){return entries.filter(e=>(!e.isPeriod&&e.dateKey===dk)||periodOccursOn(e,dk));}
 function getPeriodBanners(dk){return entries.filter(e=>e.isPeriod&&e.slotH===null&&e.periodEnd&&e.dateKey<=dk&&e.periodEnd>=dk);}
+function entryDueKey(e){return e.isPeriod?(e.periodEnd||e.occurrenceDateKey||e.dateKey):e.dateKey;}
+function trackableEntry(e){return e.type==='task'||e.type==='reminder'||e.type==='note';}
+function getOverdueEntries(){
+  const today=dateKey(new Date());
+  return entries.filter(e=>trackableEntry(e)&&!e.done&&entryDueKey(e)&&entryDueKey(e)<today)
+    .sort((a,b)=>entryDueKey(a).localeCompare(entryDueKey(b))||(a.slotH??99)-(b.slotH??99));
+}
+function getCompletedEntries(){
+  return entries.filter(e=>trackableEntry(e)&&e.done)
+    .sort((a,b)=>(b.completedAt||b.timestamp||0)-(a.completedAt||a.timestamp||0));
+}
+function formatDateKey(key){
+  return new Date(key+'T12:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+}
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function entryListCard(e,mode){
+  const icons={task:'✅',reminder:'🔔',note:'📝'};
+  const due=entryDueKey(e);
+  const time=e.slotH!==null?' · '+formatTime(e.slotH,e.slotM):'';
+  const completed=e.completedAt?' · Completed '+new Date(e.completedAt).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):'';
+  const actions=mode==='overdue'
+    ? `<button class="list-action" title="Mark done" onclick="confirmDone(${e.id})">✓</button><button class="list-action" title="Move to another date" onclick="rescheduleEntry(${e.id})">📅</button><button class="list-action" title="Edit" onclick="editEntry(${e.id})">✏️</button>`
+    : `<button class="list-action" title="Mark incomplete" onclick="confirmDone(${e.id})">↩</button><button class="list-action" title="Edit" onclick="editEntry(${e.id})">✏️</button><button class="list-action" title="Delete" onclick="confirmDelete(${e.id})">🗑</button>`;
+  return `<div class="list-card ${mode}"><div class="list-card-body"><div class="list-card-title">${icons[e.type]} ${escapeHtml(e.text)}</div><div class="list-card-meta">Due ${formatDateKey(due)}${time}${completed}</div></div><div class="list-actions">${actions}</div></div>`;
+}
+function renderOverdue(){
+  const list=getOverdueEntries();
+  document.getElementById('overdueList').innerHTML=list.length?list.map(e=>entryListCard(e,'overdue')).join(''):'<div class="list-empty"><span class="list-empty-icon">✓</span>Nothing overdue.</div>';
+}
+function renderCompleted(){
+  const list=getCompletedEntries();
+  document.getElementById('completedList').innerHTML=list.length?list.map(e=>entryListCard(e,'completed')).join(''):'<div class="list-empty"><span class="list-empty-icon">📔</span>No completed entries yet.</div>';
+}
 
 function renderAll(){
   const isToday=dateKey(viewDate)===dateKey(new Date());
@@ -689,10 +792,14 @@ function renderAll(){
   const dayE=getDayEntries(dk);
   ['meeting','task','reminder','note'].forEach(t=>document.getElementById('s'+t.charAt(0).toUpperCase()+t.slice(1)).textContent=dayE.filter(e=>e.type===t).length);
   document.getElementById('totalCount').textContent=entries.length+' entr'+(entries.length===1?'y':'ies')+' total';
+  document.getElementById('overdueCount').textContent=getOverdueEntries().length;
+  document.getElementById('completedCount').textContent=getCompletedEntries().length;
 
   if(currentView==='day') renderDay();
   else if(currentView==='week') renderWeek();
-  else renderMonth();
+  else if(currentView==='month') renderMonth();
+  else if(currentView==='overdue') renderOverdue();
+  else renderCompleted();
 }
 
 function renderDay(){
